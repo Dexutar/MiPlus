@@ -9,7 +9,7 @@ public:
 
   EventLoop (unsigned int thread_count);
 
-  ~EventLoop ();
+  void shutdown ();
 
   boost::asio::io_context& getContext (); 
 

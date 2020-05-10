@@ -6,8 +6,9 @@ EventLoop::EventLoop (unsigned int thread_count) : work_guard(io_context.get_exe
     threads.emplace_back(&boost::asio::io_context::run, io_context);
 }
 
-EventLoop::~EventLoop ()
+void EventLoop::shutdown ()
 {
+  work_guard.reset();
   for (auto &thread : threads)
   {
     if (thread.joinable())
