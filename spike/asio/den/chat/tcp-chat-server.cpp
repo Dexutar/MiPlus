@@ -115,6 +115,8 @@ public:
         if (clients.erase(client))
           post("We are one less\n\r");
       });
+      
+      async_accept();
     });
   }
 
