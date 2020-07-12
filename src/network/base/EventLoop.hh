@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 #include <thread>
 
@@ -10,6 +12,7 @@ public:
   EventLoop (unsigned int thread_count);
 
   void shutdown ();
+  void join ();
 
   boost::asio::io_context& getContext (); 
 

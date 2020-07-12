@@ -9,6 +9,10 @@ EventLoop::EventLoop (unsigned int thread_count) : work_guard(io_context.get_exe
 void EventLoop::shutdown ()
 {
   work_guard.reset();
+}
+
+void EventLoop::join ()
+{
   for (auto &thread : threads)
   {
     if (thread.joinable())

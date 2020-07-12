@@ -1,6 +1,8 @@
 #include <iostream>
+#include "ConnectionManager.hh"
 
 int main ()
 {
-  std::cout << "OwO" << std::endl;
+  ConnectionManager cm{25565};
+  cm.wait();
 }
