@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 #include <boost/asio.hpp>
 
@@ -10,15 +11,11 @@ class Channel
 {
 public:
 
-  Channel (boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, Protocol &&protocol);
+  Channel (boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, std::unique_ptr<Protocol> &&protocol);
 
   const std::string& getRemoteAddress() const
   {
     return remoteAddress;
-  }
-  const std::string& getLocalAddress() const
-  {
-    return localAddress;
   }
 
   bool operator== (const Channel &channel) const;
@@ -29,10 +26,9 @@ private:
   boost::asio::io_context::strand read;
   boost::asio::io_context::strand write;
 
-  Protocol protocol;
+  std::unique_ptr<Protocol> protocol;
 
   std::string remoteAddress;
-  std::string localAddress;
 };
 
 namespace std

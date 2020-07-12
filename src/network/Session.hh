@@ -3,7 +3,7 @@
 #include <boost/asio.hpp>
 
 #include "Channel.hh"
-#include "Protocol.hh"
+#include "ProtocolFactory.hh"
 
 class Session;
 
