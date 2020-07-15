@@ -7,11 +7,13 @@ include_directories(codec/handshake)
 include_directories(handler)
 include_directories(handler/handshake)
 include_directories(message)
+include_directories(types)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 SET(NETWORK_SOURCES base/EventLoop.cpp
                     base/Channel.cpp
-                    base/Bootstrap.cpp           
+                    base/Bootstrap.cpp
+                    types/VarInt.cpp           
                     Session.cpp
                     SessionRegistry.cpp
                     ConnectionManager.cpp

@@ -4,5 +4,4 @@
 int main ()
 {
   ConnectionManager cm{25565};
-  cm.wait();
 }

@@ -26,5 +26,5 @@ public:
   friend size_t std::hash<Session>::operator()(const Session &session) const;
 
 private:
-  Channel channel;
+  std::unique_ptr<Channel> channel;
 };
