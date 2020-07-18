@@ -2,6 +2,6 @@
 
 class Message
 {
-public:
-  virtual ~Message () = 0;
+private:
+  Message ();
 };

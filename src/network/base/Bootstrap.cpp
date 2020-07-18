@@ -4,9 +4,8 @@ namespace io = boost::asio;
 using tcp = io::ip::tcp;
 using error_code = boost::system::error_code;
 
-Bootstrap::Bootstrap (std::uint16_t port,std::function<void (Session &&session)> &&onAccept) : boss{2}, worker{4}, acceptor{boss.getContext(),tcp::endpoint{tcp::v4(),port}}
+Bootstrap::Bootstrap (std::uint16_t port, SessionRegistry &sessions) : boss{2}, worker{4}, acceptor{boss.getContext(),tcp::endpoint{tcp::v4(),port}}, sessions{sessions}
 {
-  this->onAccept = std::move(onAccept);
   accept();
 }
 
@@ -30,8 +29,8 @@ void Bootstrap::accept ()
   {
     if (not error)
     {
-      Session session{std::move(*socket), worker.getContext()};
-      onAccept(std::move(session));
+      std::string id = socket->remote_endpoint().address().to_string() + ":" + std::to_string(socket->remote_endpoint().port());
+      sessions.emplace(std::move(id), std::move(*socket), worker.getContext());
     }
     accept();
   });

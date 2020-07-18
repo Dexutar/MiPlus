@@ -1,8 +1,9 @@
 #pragma once
 
+#include <iostream>
+
 class Protocol
 {
 public:
-  virtual void inbound (int opcode) = 0;
-  virtual void outbound (int opcode) = 0;
+  virtual void inbound (std::istream &is) = 0;
 };

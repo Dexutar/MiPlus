@@ -6,17 +6,20 @@
 
 #include "EventLoop.hh"
 #include "Session.hh"
+#include "SessionRegistry.hh"
 
 class Bootstrap
 {
 public:
 
-  Bootstrap (std::uint16_t port, std::function<void (Session &&session)> &&onAccept);
+  Bootstrap (std::uint16_t port, SessionRegistry &sessions);
 
   void shutdown ();
   void join ();
 
 private:
+
+  void accept ();
 
   EventLoop boss;
   EventLoop worker;
@@ -24,8 +27,6 @@ private:
   boost::asio::ip::tcp::acceptor acceptor;
 
   std::optional<boost::asio::ip::tcp::socket> socket;
-
-  std::function<void (Session &&session)> onAccept;
-
-  void accept ();
+  
+  SessionRegistry &sessions;
 };

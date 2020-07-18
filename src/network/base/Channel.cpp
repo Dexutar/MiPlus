@@ -1,5 +1,5 @@
 #include "Channel.hh"
-#include "VarInt.hh"
+#include "VarNumber.hh"
 
 #include <iostream>
 
@@ -36,6 +36,7 @@ void Channel::read_packet ()
   {
     if (not error)
     {
+      std::cout << remoteAddress << ": recived packed with length " << *(match_condition.packet_length) << std::endl;
       in_buffer.consume(*(match_condition.packet_length));
       read_header();
     }
@@ -47,17 +48,9 @@ void Channel::read_packet ()
   }));
 }
 
-bool Channel::operator== (const Channel &channel) const
-{
-  return this->remoteAddress == channel.remoteAddress;
-}
-
 std::pair<Channel::MatchCondition::iterator, bool> Channel::MatchCondition::operator() (iterator begin, iterator end)
 {
-  iterator it;
-  std::tie(it, *packet_length) = VarInt::readVarInt(begin,end);
-  if (it == end)
-    return {end, false};
-  
-  return {++it, true};
+  auto [res, it, length] = VarNumber::readVarInt(begin,end);
+  *packet_length = length;
+  return {it,res};
 }

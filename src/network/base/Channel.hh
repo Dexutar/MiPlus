@@ -29,7 +29,6 @@ public:
     return remoteAddress;
   }
 
-  bool operator== (const Channel &channel) const;
 
 private:
 
@@ -53,16 +52,4 @@ private:
 namespace boost::asio {
   template <> struct is_match_condition<Channel::MatchCondition>
     : public boost::true_type {};
-}
-
-namespace std
-{
-  template <>
-  struct hash<Channel>
-  {
-    size_t operator() (const Channel &channel) const
-    {
-      return std::hash<std::string>{}(channel.getRemoteAddress());
-    }
-  };
 }

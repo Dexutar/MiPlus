@@ -13,8 +13,7 @@ class HandshakeProtocol : public Protocol
 {
 public:
   
-  void inbound (int opcode) override {}
-  void outbound (int opcode) override {}
+  void inbound (std::istream &is) override;
 
 private:
   HandshakeCodec handshakeCodec;

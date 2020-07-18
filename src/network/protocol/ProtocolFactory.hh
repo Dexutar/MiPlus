@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "Protocol.hh"
+#include "Session.hh"
 #include "HandshakeProtocol.hh"
 
 enum class Protocols { Handshake };
