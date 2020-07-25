@@ -23,7 +23,7 @@ public:
       if (it == end)
         return {false,end,0};
       read = *(it++);
-      result |=  (read & 0x7F) << (indx++ * 7);
+      result |=  (read & 0x7F) << (7 * indx++);
       if (indx > 5) throw std::overflow_error("VarInt is too big");
     }
     while (read & 0x80);

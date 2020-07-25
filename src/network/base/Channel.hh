@@ -29,6 +29,7 @@ public:
     return remoteAddress;
   }
 
+  void setProtocol (std::unique_ptr<Protocol> &&protocol);
 
 private:
 

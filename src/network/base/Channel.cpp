@@ -12,6 +12,11 @@ Channel::Channel (boost::asio::ip::tcp::socket &&socket, boost::asio::io_context
   read_header();
 }
 
+void Channel::setProtocol (std::unique_ptr<Protocol> &&protocol)
+{
+  this->protocol = std::move(protocol);
+}
+
 void Channel::read_header ()
 {
   io::async_read_until(socket, in_buffer, match_condition, io::bind_executor(read_strand, [&,packet_length = match_condition.packet_length] (const auto &error, std::size_t bytes_transferred)
@@ -37,6 +42,8 @@ void Channel::read_packet ()
     if (not error)
     {
       std::cout << remoteAddress << ": recived packed with length " << *(match_condition.packet_length) << std::endl;
+      std::istream stream(&in_buffer);
+      protocol->inbound(stream);
       in_buffer.consume(*(match_condition.packet_length));
       read_header();
     }

@@ -1,21 +1,19 @@
 #pragma once
 
-#include <array>
-#include <memory>
-#include <tuple>
-
 #include "Protocol.hh"
 
-#include "HandshakeCodec.hh"
-#include "HandshakeHandler.hh"
+#include "HandshakeMessage.hh"
 
 class HandshakeProtocol : public Protocol
 {
 public:
-  
+
+  HandshakeProtocol (Session &session) : Protocol{session}
+  {}
+
   void inbound (std::istream &is) override;
 
 private:
-  HandshakeCodec handshakeCodec;
-  HandshakeHandler handshakeHandler;
+
+  void handle (const HandshakeMessage &message);
 };
