@@ -17,6 +17,19 @@ void Channel::setProtocol (std::unique_ptr<Protocol> &&protocol)
   this->protocol = std::move(protocol);
 }
 
+void Channel::send (const Message &message)
+{
+  std::ostream os(&out_buffer);
+  os << message;
+  io::async_write(socket, out_buffer, [&] (const auto &error, std::size_t bytes_transferred)
+  {
+    if (error)
+    {
+      std::cerr << "Send message failed: " << error.message() << std::endl;
+    }
+  });
+}
+
 void Channel::read_header ()
 {
   io::async_read_until(socket, in_buffer, match_condition, io::bind_executor(read_strand, [&,packet_length = match_condition.packet_length] (const auto &error, std::size_t bytes_transferred)

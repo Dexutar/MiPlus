@@ -16,3 +16,8 @@ void Session::setProtocol (Protocols protocol)
 {
   channel.setProtocol(std::move(ProtocolFactory::create(protocol,*this)));
 }
+
+void Session::send (const Message &message)
+{
+  channel.send(message);
+}

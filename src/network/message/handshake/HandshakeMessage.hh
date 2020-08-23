@@ -2,15 +2,19 @@
 
 #include <string>
 
-class HandshakeMessage
+#include "Message.hh"
+
+class HandshakeMessage : Message
 {
 public:
+  static const std::int16_t opcode = 0;
 
   friend std::istream& operator>> (std::istream &is, HandshakeMessage &message);
 
-  int getState();
+  int getState() const;
 
-  void print (); 
+  std::ostream& write (std::ostream &os) const override;
+  void print () const; 
 
 private:
   

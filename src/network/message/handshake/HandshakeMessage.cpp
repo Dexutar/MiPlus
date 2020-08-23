@@ -1,6 +1,7 @@
 #include "HandshakeMessage.hh"
 
-#include "VarNumber.hh"
+#include <sstream>
+
 #include "VarString.hh"
 #include "BasicTypes.hh"
 
@@ -13,12 +14,27 @@ std::istream& operator>> (std::istream &is, HandshakeMessage &message)
   return is;
 }
 
-int HandshakeMessage::getState()
+std::ostream& HandshakeMessage::write (std::ostream &os) const
+{
+  std::stringbuf sb;
+  std::ostream data{&sb};
+  
+  VarNumber::writeVarNumber(data, HandshakeMessage::opcode);
+  VarNumber::writeVarNumber(data, version);
+  VarNumber::writeVarNumber(data, server_address.size());
+  data << server_address;
+  BasicTypes::writeUint16(data, server_port);
+  VarNumber::writeVarNumber(data, next_state);
+
+  return write_header(os, data);
+}
+
+int HandshakeMessage::getState() const
 {
   return next_state;
 }
 
-void HandshakeMessage::print ()
+void HandshakeMessage::print () const
 {
   std::cout << "[Handshake Message]" << std::endl << std::endl;
   std::cout << "Version: " << version << std::endl;

@@ -16,4 +16,6 @@ public:
 private:
 
   void handle (const HandshakeMessage &message);
+
+  bool first = false;
 };

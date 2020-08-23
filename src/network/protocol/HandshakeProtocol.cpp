@@ -5,7 +5,7 @@
 void HandshakeProtocol::inbound (std::istream &is)
 {
   int32_t opcode = VarNumber::readVarInt(is);
-  if (opcode == 0)
+  if (opcode == HandshakeMessage::opcode)
   {
     HandshakeMessage message; is >> message;
     handle(message);
@@ -15,5 +15,5 @@ void HandshakeProtocol::inbound (std::istream &is)
 
 void HandshakeProtocol::handle (const HandshakeMessage &message)
 {
-
+  
 }
