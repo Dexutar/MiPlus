@@ -17,11 +17,12 @@ public:
   {
     using iterator = boost::asio::buffers_iterator<boost::asio::streambuf::const_buffers_type>;
 
-    MatchCondition () : packet_length{std::make_shared<std::size_t>(0)} {}
+    MatchCondition (std::size_t &packet_length) : packet_length{packet_length} {}
+    MatchCondition (const MatchCondition &match_condtion) : packet_length{match_condtion.packet_length} {}
 
     std::pair<iterator, bool> operator() (iterator begin, iterator end);
 
-    std::shared_ptr<std::size_t> packet_length;
+    std::size_t &packet_length;
   };
 
   Channel (boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, std::unique_ptr<Protocol> &&protocol);
@@ -51,7 +52,7 @@ private:
 
   std::string remoteAddress;
 
-  MatchCondition match_condition;
+  std::size_t packet_length;
 };
 
 namespace boost::asio {

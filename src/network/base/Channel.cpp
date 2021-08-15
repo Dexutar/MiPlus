@@ -32,7 +32,7 @@ void Channel::send (const Message &message)
 
 void Channel::read_header ()
 {
-  io::async_read_until(socket, in_buffer, match_condition, io::bind_executor(read_strand, [&,packet_length = match_condition.packet_length] (const auto &error, std::size_t bytes_transferred)
+  io::async_read_until(socket, in_buffer, MatchCondition(packet_length), io::bind_executor(read_strand, [&] (const auto &error, std::size_t bytes_transferred)
   {
     if (not error)
     {
@@ -49,15 +49,15 @@ void Channel::read_header ()
 
 void Channel::read_packet ()
 {
-  std::size_t to_read = *(match_condition.packet_length) - std::min(in_buffer.size(),*(match_condition.packet_length));
+  std::size_t to_read = packet_length - std::min(in_buffer.size(),packet_length);
   io::async_read(socket, in_buffer, boost::asio::transfer_at_least(to_read), io::bind_executor(read_strand, [&] (const auto &error, std::size_t bytes_transferred)
   {
     if (not error)
     {
-      std::cout << remoteAddress << ": recived packed with length " << *(match_condition.packet_length) << std::endl;
+      std::cout << remoteAddress << ": recived packed with length " << packet_length << std::endl;
       std::istream stream(&in_buffer);
       protocol->inbound(stream);
-      in_buffer.consume(*(match_condition.packet_length));
+      in_buffer.consume(packet_length);
       read_header();
     }
     else if (error == io::error::eof)
@@ -70,7 +70,6 @@ void Channel::read_packet ()
 
 std::pair<Channel::MatchCondition::iterator, bool> Channel::MatchCondition::operator() (iterator begin, iterator end)
 {
-  auto [res, it, length] = VarNumber::readVarInt(begin,end);
-  *packet_length = length;
+  auto [res, it, packet_length] = VarNumber::readVarInt(begin,end);
   return {it,res};
 }
