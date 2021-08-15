@@ -1,5 +1,3 @@
-project(network)
-
 include_directories(base)
 include_directories(protocol)
 include_directories(message)
