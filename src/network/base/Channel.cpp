@@ -70,6 +70,7 @@ void Channel::read_packet ()
 
 std::pair<Channel::MatchCondition::iterator, bool> Channel::MatchCondition::operator() (iterator begin, iterator end)
 {
-  auto [res, it, packet_length] = VarNumber::readVarInt(begin,end);
-  return {it,res};
+  auto [valid, it, value] = VarNumber::readVarInt(begin,end);
+  packet_length = value;
+  return {it,valid};
 }
