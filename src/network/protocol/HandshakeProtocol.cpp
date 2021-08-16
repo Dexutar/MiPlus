@@ -5,15 +5,15 @@
 void HandshakeProtocol::inbound (std::istream &is)
 {
   int32_t opcode = VarNumber::readVarInt(is);
-  if (opcode == HandshakeMessage::opcode)
+  if (opcode == HandshakePacket::opcode)
   {
-    HandshakeMessage message; is >> message;
-    handle(message);
+    HandshakePacket packet; is >> packet;
+    handle(packet);
   }
   else std::cerr << "Unexpected opcode:  " << opcode << std::endl;
 }
 
-void HandshakeProtocol::handle (const HandshakeMessage &message)
+void HandshakeProtocol::handle (const HandshakePacket &packet)
 {
-  
+  packet.print();
 }

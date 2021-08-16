@@ -4,13 +4,13 @@
 
 #include "VarNumber.hh"
 
-class Message
+class Packet
 {
 public:
   
-  friend std::ostream& operator<< (std::ostream &os, const Message &message)
+  friend std::ostream& operator<< (std::ostream &os, const Packet &packet)
   {
-    return message.write(os);
+    return packet.write(os);
   }
 
 protected:

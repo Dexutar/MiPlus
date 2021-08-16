@@ -4,7 +4,7 @@
 
 #include "Channel.hh"
 #include "ProtocolFactory.hh"
-#include "Message.hh"
+#include "Packet.hh"
 
 
 class Session
@@ -14,9 +14,9 @@ public:
 
   std::string getID () const;
 
-  void setProtocol (Protocols protocol);
+  void setState (ConnectionState state);
 
-  void send (const Message &message);
+  void send (const Packet &message);
 
 private:
   Channel channel;

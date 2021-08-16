@@ -17,15 +17,15 @@ void Channel::setProtocol (std::unique_ptr<Protocol> &&protocol)
   this->protocol = std::move(protocol);
 }
 
-void Channel::send (const Message &message)
+void Channel::send (const Packet &packet)
 {
   std::ostream os(&out_buffer);
-  os << message;
+  os << packet;
   io::async_write(socket, out_buffer, [&] (const auto &error, std::size_t bytes_transferred)
   {
     if (error)
     {
-      std::cerr << "Send message failed: " << error.message() << std::endl;
+      std::cerr << "Send packet failed: " << error.message() << std::endl;
     }
   });
 }

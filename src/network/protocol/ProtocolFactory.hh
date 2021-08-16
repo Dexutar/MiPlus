@@ -5,17 +5,16 @@
 #include "Protocol.hh"
 #include "Session.hh"
 #include "HandshakeProtocol.hh"
-
-enum class Protocols { Handshake };
+#include "ConnectionState.hh"
 
 class ProtocolFactory
 {
 public:
-  static std::unique_ptr<Protocol> create (Protocols protocol, Session &session)
+  static std::unique_ptr<Protocol> create (ConnectionState state, Session &session)
   {
-    switch (protocol)
+    switch (state)
     {
-    case Protocols::Handshake:
+    case ConnectionState::Handshake:
       return std::make_unique<HandshakeProtocol>(session);
     }
     return std::unique_ptr<Protocol>{};

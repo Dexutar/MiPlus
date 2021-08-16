@@ -2,7 +2,7 @@
 
 #include "Protocol.hh"
 
-#include "HandshakeMessage.hh"
+#include "HandshakePacket.hh"
 
 class HandshakeProtocol : public Protocol
 {
@@ -15,7 +15,7 @@ public:
 
 private:
 
-  void handle (const HandshakeMessage &message);
+  void handle (const HandshakePacket &packet);
 
   bool first = false;
 };

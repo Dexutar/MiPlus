@@ -6,7 +6,7 @@
 #include <boost/asio.hpp>
 
 #include "Protocol.hh"
-#include "Message.hh"
+#include "Packet.hh"
 
 
 class Channel
@@ -34,7 +34,7 @@ public:
 
   void setProtocol (std::unique_ptr<Protocol> &&protocol);
 
-  void send (const Message &message);
+  void send (const Packet &packet);
 
 private:
 
