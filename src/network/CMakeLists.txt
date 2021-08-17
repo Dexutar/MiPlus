@@ -2,7 +2,7 @@ include_directories(base)
 include_directories(protocol)
 include_directories(protocol/handshake)
 include_directories(packet)
-include_directories(packet/handshake)
+include_directories(packet/handshake/client)
 include_directories(types)
 include_directories(session)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -25,7 +25,7 @@ target_include_directories(network INTERFACE  ${CMAKE_CURRENT_SOURCE_DIR}/base
                                               ${CMAKE_CURRENT_SOURCE_DIR}/protocol
                                               ${CMAKE_CURRENT_SOURCE_DIR}/protocol/handshake
                                               ${CMAKE_CURRENT_SOURCE_DIR}/packet
-                                              ${CMAKE_CURRENT_SOURCE_DIR}/packet/handshake
+                                              ${CMAKE_CURRENT_SOURCE_DIR}/packet/handshake/client
                                               ${CMAKE_CURRENT_SOURCE_DIR}/session
                                               ${CMAKE_CURRENT_SOURCE_DIR}/types
                                               ${CMAKE_CURRENT_SOURCE_DIR})

@@ -8,17 +8,16 @@
 class HandshakePacket : Packet
 {
 public:
-  static const std::int16_t opcode = 0;
+  static const std::uint8_t opcode = 0;
 
   friend std::istream& operator>> (std::istream &is, HandshakePacket &packet);
 
   ConnectionState getRequestedState() const;
-
-  std::ostream& write (std::ostream &os) const override;
   void print () const; 
 
 private:
-  
+  std::ostream& write (std::ostream &os) const override;
+
   int version;
   std::string server_address;
   std::uint16_t server_port;
