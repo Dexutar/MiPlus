@@ -21,8 +21,7 @@ std::ostream& HandshakePacket::write (std::ostream &os) const
   
   VarNumber::writeVarNumber(data, HandshakePacket::opcode);
   VarNumber::writeVarNumber(data, version);
-  VarNumber::writeVarNumber(data, server_address.size());
-  data << server_address;
+  VarString::writeVarString(data, server_address);
   BasicTypes::writeUint16(data, server_port);
   VarNumber::writeVarNumber(data, static_cast<std::int8_t>(requested_state));
 
