@@ -15,4 +15,4 @@ private:
   std::ostream& write (std::ostream &os) const override;
 
   std::string response;
-}
+};
