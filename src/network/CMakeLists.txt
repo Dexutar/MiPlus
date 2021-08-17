@@ -18,6 +18,7 @@ SET(NETWORK_SOURCES base/EventLoop.cpp
                     types/VarString.cpp
                     packet/handshake/client/HandshakePacket.cpp
                     packet/status/client/RequestPacket.cpp
+                    packet/status/client/PingPacket.cpp
                     packet/status/server/ResponsePacket.cpp
                     protocol/handshake/HandshakeProtocol.cpp     
                     ConnectionManager.cpp
