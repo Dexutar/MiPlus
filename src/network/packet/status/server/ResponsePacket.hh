@@ -7,7 +7,7 @@
 class ResponsePacket : public Packet
 {
 public:
-  static const std::uint8_t opcode = 0;
+  static constexpr std::uint8_t opcode = 0;
 
   ResponsePacket(std::string &&response) : response{response} {}
 

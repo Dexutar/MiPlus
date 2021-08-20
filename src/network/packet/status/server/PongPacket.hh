@@ -5,7 +5,7 @@
 class PongPacket : public Packet
 {
 public:
-  static const std::uint8_t opcode = 1;
+  static constexpr std::uint8_t opcode = 1;
 
   PongPacket (std::int64_t payload) : payload {payload} {}
 

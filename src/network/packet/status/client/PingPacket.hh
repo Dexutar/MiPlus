@@ -5,7 +5,7 @@
 class PingPacket : public Packet
 {
 public:
-  static const std::uint8_t opcode = 1;
+  static constexpr std::uint8_t opcode = 1;
 
   friend std::istream& operator>> (std::istream &is, PingPacket &packet);
 

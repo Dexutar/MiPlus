@@ -8,7 +8,7 @@
 class HandshakePacket : Packet
 {
 public:
-  static const std::uint8_t opcode = 0;
+  static constexpr std::uint8_t opcode = 0;
 
   friend std::istream& operator>> (std::istream &is, HandshakePacket &packet);
 
