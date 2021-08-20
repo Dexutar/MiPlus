@@ -20,13 +20,13 @@ void Channel::send (const Packet &packet)
 {
   std::ostream os(&out_buffer);
   os << packet;
-  io::async_write(socket, out_buffer, [&] (const auto &error, std::size_t bytes_transferred)
+  io::async_write(socket, out_buffer, io::bind_executor(write_strand, [&] (const auto &error, std::size_t bytes_transferred)
   {
     if (error)
     {
       std::cerr << "Send packet failed: " << error.message() << std::endl;
     }
-  });
+  }));
 }
 
 void Channel::read_header ()
