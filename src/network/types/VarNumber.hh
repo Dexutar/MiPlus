@@ -44,7 +44,7 @@ public:
     do
     {
       if (it == end)
-        return {false,end,0};
+        return {false,begin,0};
       read = *(it++);
       result |=  (read & 0x7F) << (indx++ * 7);
       if (indx > 10) throw std::overflow_error("VarLong is too big");
