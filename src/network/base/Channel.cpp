@@ -57,7 +57,6 @@ void Channel::read_packet ()
       std::cout << remoteAddress << ": recived packed with length " << packet_length << std::endl;
       std::istream stream(&in_buffer);
       protocol->inbound(stream);
-      in_buffer.consume(packet_length);
       read_header();
     }
     else if (error == io::error::eof)
