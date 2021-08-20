@@ -1,5 +1,6 @@
 #include "Session.hh"
 
+#include "ProtocolFactory.hh"
 
 namespace io = boost::asio;
 using tcp = io::ip::tcp;

@@ -3,7 +3,7 @@
 #include <boost/asio.hpp>
 
 #include "Channel.hh"
-#include "ProtocolFactory.hh"
+#include "ConnectionState.hh"
 #include "Packet.hh"
 
 

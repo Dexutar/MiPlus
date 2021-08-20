@@ -1,10 +1,11 @@
 #include "HandshakeProtocol.hh"
 
-#include "VarNumber.hh"
+#include "Session.hh"
 
 void HandshakeProtocol::inbound (std::istream &is)
 {
   int32_t opcode = VarNumber::readVarInt(is);
+
   if (opcode == HandshakePacket::opcode)
   {
     HandshakePacket packet; is >> packet;
@@ -15,5 +16,5 @@ void HandshakeProtocol::inbound (std::istream &is)
 
 void HandshakeProtocol::handle (const HandshakePacket &packet)
 {
-  packet.print();
+  session.setState(packet.getRequestedState());
 }

@@ -1,7 +1,6 @@
 #include "Channel.hh"
-#include "VarNumber.hh"
 
-#include <iostream>
+#include "VarNumber.hh"
 
 namespace io = boost::asio;
 

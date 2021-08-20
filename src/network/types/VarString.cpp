@@ -1,4 +1,5 @@
 #include "VarString.hh"
+
 #include "VarNumber.hh"
 
 std::string VarString::readVarString (std::istream &is)

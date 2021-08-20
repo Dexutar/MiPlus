@@ -5,6 +5,7 @@ include_directories(packet/status/client)
 include_directories(packet/status/server)
 include_directories(protocol)
 include_directories(protocol/handshake)
+include_directories(protocol/status)
 include_directories(session)
 include_directories(types)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -18,6 +19,7 @@ SET(NETWORK_SOURCES base/EventLoop.cpp
                     packet/status/server/PongPacket.cpp
                     packet/status/server/ResponsePacket.cpp
                     protocol/handshake/HandshakeProtocol.cpp
+                    protocol/status/StatusProtocol.cpp
                     session/Session.cpp
                     session/SessionRegistry.cpp
                     types/VarNumber.cpp
@@ -34,6 +36,7 @@ target_include_directories(network INTERFACE  ${CMAKE_CURRENT_SOURCE_DIR}/base
                                               ${CMAKE_CURRENT_SOURCE_DIR}/packet/status/server
                                               ${CMAKE_CURRENT_SOURCE_DIR}/protocol
                                               ${CMAKE_CURRENT_SOURCE_DIR}/protocol/handshake
+                                              ${CMAKE_CURRENT_SOURCE_DIR}/protocol/status
                                               ${CMAKE_CURRENT_SOURCE_DIR}/session
                                               ${CMAKE_CURRENT_SOURCE_DIR}/types
                                               ${CMAKE_CURRENT_SOURCE_DIR})

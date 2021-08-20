@@ -3,9 +3,12 @@
 #include <memory>
 
 #include "Protocol.hh"
+
 #include "Session.hh"
-#include "HandshakeProtocol.hh"
 #include "ConnectionState.hh"
+
+#include "HandshakeProtocol.hh"
+#include "StatusProtocol.hh"
 
 class ProtocolFactory
 {
@@ -16,6 +19,8 @@ public:
     {
     case ConnectionState::Handshake:
       return std::make_unique<HandshakeProtocol>(session);
+    case ConnectionState::Status:
+      return std::make_unique<StatusProtocol>(session);
     }
     return std::unique_ptr<Protocol>{};
   }
