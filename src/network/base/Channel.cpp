@@ -5,7 +5,7 @@
 namespace io = boost::asio;
 
 Channel::Channel (boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, std::unique_ptr<Protocol> &&protocol) 
-  : socket{std::move(socket)}, read_strand{io_context}, write_strand{io_context}, protocol{std::move(protocol)},
+  : socket{std::move(socket)}, read_strand{io_context}, write_strand{io_context}, in_buffer{Channel::max_buffer_input_size}, protocol{std::move(protocol)},
     remoteAddress{this->socket.remote_endpoint().address().to_string() + ":" + std::to_string(this->socket.remote_endpoint().port())}
 {
   read_header();
