@@ -5,7 +5,7 @@
 namespace io = boost::asio;
 
 Channel::Channel (boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, std::unique_ptr<Protocol> &&protocol) 
-  : socket{std::move(socket)}, write_strand{io_context}, in_buffer{Channel::max_buffer_input_size}, protocol{std::move(protocol)},
+  : socket{std::move(socket)}, write_strand{io_context}, in_buffer{Packet::max_packet_length}, protocol{std::move(protocol)},
     remoteAddress{this->socket.remote_endpoint().address().to_string() + ":" + std::to_string(this->socket.remote_endpoint().port())}
 {
   read_header();
@@ -36,7 +36,12 @@ void Channel::read_header ()
     if (not error)
     {
       in_buffer.consume(bytes_transferred);
-      read_packet();
+
+      if (packet_length > Packet::max_packet_length)
+      {
+        std::cerr << "Received packet with length wider than 21-bit" << std::endl;
+      }
+      else read_packet();
     }
     else if (error == io::error::eof)
     {
@@ -53,7 +58,7 @@ void Channel::read_packet ()
   {
     if (not error)
     {
-      std::cout << remoteAddress << ": recived packed with length " << packet_length << std::endl;
+      std::cout << remoteAddress << ": received packed with length " << packet_length << std::endl;
       std::istream stream(&in_buffer);
       protocol->inbound(stream);
       read_header();

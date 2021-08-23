@@ -41,10 +41,8 @@ private:
   void read_header ();
   void read_packet ();
 
-  static constexpr std::size_t max_buffer_input_size = 2097152;
-
   boost::asio::ip::tcp::socket socket;
-  
+
   boost::asio::io_context::strand write_strand;
 
   boost::asio::streambuf in_buffer;

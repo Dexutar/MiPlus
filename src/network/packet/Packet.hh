@@ -8,6 +8,8 @@ class Packet
 {
 public:
   
+  static constexpr std::size_t max_packet_length = 2097152;
+
   friend std::ostream& operator<< (std::ostream &os, const Packet &packet)
   {
     return packet.write(os);
