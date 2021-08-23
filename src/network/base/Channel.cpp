@@ -47,7 +47,7 @@ void Channel::read_header ()
     {
       std::cout << "Client closed connection" << std::endl;
     }
-    else std::cout << "read_header failed: " << error.message() << std::endl;
+    else std::cerr << "read_header failed: " << error.message() << std::endl;
   });
 }
 
@@ -67,7 +67,7 @@ void Channel::read_packet ()
     {
       std::cout << "Client closed connection" << std::endl;
     }
-    else std::cout << "read_packet failed: " << error.message() << std::endl;
+    else std::cerr << "read_packet failed: " << error.message() << std::endl;
   });
 }
 
