@@ -20,6 +20,7 @@ void StatusProtocol::inbound (std::istream &is)
     PingPacket packet; is >> packet;
     handle(packet);
   }
+  else std::cerr << "Unexpected opcode:  " << opcode << std::endl;
 }
 
 void StatusProtocol::handle ()
