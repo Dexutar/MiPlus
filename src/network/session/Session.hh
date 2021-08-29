@@ -6,11 +6,12 @@
 #include "ConnectionState.hh"
 #include "Packet.hh"
 
+class SessionRegistry;
 
 class Session
 {
 public:
-  Session (boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context);
+  Session (boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, SessionRegistry &session_registry);
 
   std::string getID () const;
 
@@ -18,6 +19,9 @@ public:
 
   void send (const Packet &message);
 
+  void terminate();
+
 private:
   Channel channel;
+  SessionRegistry &session_registry;  
 };

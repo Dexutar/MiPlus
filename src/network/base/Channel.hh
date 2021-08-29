@@ -2,6 +2,8 @@
 
 #include <string>
 #include <memory>
+#include <atomic>
+#include <concepts>
 
 #include <boost/asio.hpp>
 
@@ -36,10 +38,25 @@ public:
 
   void send (const Packet &packet);
 
+  template<std::invocable F>
+  void close(F &&callback)
+  {
+    active = false;
+    boost::asio::post(write_strand, [&, callback = std::move(callback)] () 
+    {
+      boost::system::error_code error;
+      socket.close(error);
+      std::cout << "Connection closed" << std::endl;
+      callback();
+    });
+  }
+
 private:
 
   void read_header ();
   void read_packet ();
+
+  std::atomic_bool active;
 
   boost::asio::ip::tcp::socket socket;
 

@@ -4,8 +4,10 @@
 
 namespace io = boost::asio;
 
+using error_code = boost::system::error_code;
+
 Channel::Channel (boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, std::unique_ptr<Protocol> &&protocol) 
-  : socket{std::move(socket)}, write_strand{io_context}, in_buffer{Packet::max_packet_length}, protocol{std::move(protocol)},
+  : active{true}, socket{std::move(socket)}, write_strand{io_context}, in_buffer{Packet::max_packet_length}, protocol{std::move(protocol)},
     remoteAddress{this->socket.remote_endpoint().address().to_string() + ":" + std::to_string(this->socket.remote_endpoint().port())}
 {
   read_header();
@@ -18,15 +20,18 @@ void Channel::setProtocol (std::unique_ptr<Protocol> &&protocol)
 
 void Channel::send (const Packet &packet)
 {
-  std::ostream os(&out_buffer);
-  os << packet;
-  io::async_write(socket, out_buffer, io::bind_executor(write_strand, [&] (const auto &error, std::size_t bytes_transferred)
+  if (active)
   {
-    if (error)
+    std::ostream os(&out_buffer);
+    os << packet;
+    io::async_write(socket, out_buffer, io::bind_executor(write_strand, [&] (const auto &error, std::size_t bytes_transferred)
     {
-      std::cerr << "Send packet failed: " << error.message() << std::endl;
-    }
-  }));
+      if (error)
+      {
+        std::cerr << "Send packet failed: " << error.message() << std::endl;
+      }
+    }));
+  }
 }
 
 void Channel::read_header ()
@@ -43,11 +48,11 @@ void Channel::read_header ()
       }
       else read_packet();
     }
-    else if (error == io::error::eof)
+    else
     {
-      std::cout << "Client closed connection" << std::endl;
+      if (error == io::error::eof) std::cout << "Client closed connection" << std::endl;
+      else std::cerr << "read_header failed: " << error.message() << std::endl;
     }
-    else std::cerr << "read_header failed: " << error.message() << std::endl;
   });
 }
 
@@ -61,13 +66,13 @@ void Channel::read_packet ()
       std::cout << remoteAddress << ": received packed with length " << packet_length << std::endl;
       std::istream stream(&in_buffer);
       protocol->inbound(stream);
-      read_header();
+      if (active) read_header();
     }
-    else if (error == io::error::eof)
+    else
     {
-      std::cout << "Client closed connection" << std::endl;
+      if (error == io::error::eof) std::cout << "Client closed connection" << std::endl;
+      else std::cerr << "read_packet failed: " << error.message() << std::endl;
     }
-    else std::cerr << "read_packet failed: " << error.message() << std::endl;
   });
 }
 

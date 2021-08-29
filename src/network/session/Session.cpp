@@ -1,11 +1,12 @@
 #include "Session.hh"
 
 #include "ProtocolFactory.hh"
+#include "SessionRegistry.hh"
 
 namespace io = boost::asio;
 using tcp = io::ip::tcp;
 
-Session::Session (tcp::socket &&socket, io::io_context &io_context) : channel{std::move(socket),io_context,std::move(ProtocolFactory::create(ConnectionState::Handshake,*this))}
+Session::Session (tcp::socket &&socket, io::io_context &io_context, SessionRegistry &session_registry) : channel{std::move(socket),io_context,std::move(ProtocolFactory::create(ConnectionState::Handshake,*this))}, session_registry{session_registry}
 {}
 
 std::string Session::getID () const
@@ -21,4 +22,9 @@ void Session::setState (ConnectionState state)
 void Session::send (const Packet &packet)
 {
   channel.send(packet);
+}
+
+void Session::terminate ()
+{
+  channel.close([&] () {session_registry.erase(getID());});
 }
