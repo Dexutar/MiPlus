@@ -14,6 +14,7 @@ void StatusProtocol::inbound (std::istream &is)
   if (opcode == RequestPacket::opcode)
   {
     if (not handled) handle();
+    else session.terminate();
   }
   else if (opcode == PingPacket::opcode)
   {
@@ -35,4 +36,5 @@ void StatusProtocol::handle (const PingPacket &packet) const
 {
   PongPacket pong{packet.getPayload()};
   session.send(pong);
+  session.terminate();
 }
