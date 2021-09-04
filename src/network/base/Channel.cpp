@@ -1,5 +1,7 @@
 #include "Channel.hh"
 
+#include <chrono>
+
 #include "VarNumber.hh"
 
 namespace io = boost::asio;
@@ -7,10 +9,11 @@ namespace io = boost::asio;
 using error_code = boost::system::error_code;
 
 Channel::Channel (boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, std::unique_ptr<Protocol> &&protocol) 
-  : active{true}, socket{std::move(socket)}, write_strand{io_context}, in_buffer{Packet::max_packet_length}, protocol{std::move(protocol)},
-    remoteAddress{this->socket.remote_endpoint().address().to_string() + ":" + std::to_string(this->socket.remote_endpoint().port())}
+  : active{true}, socket{std::move(socket)}, input_deadline{io_context}, write_strand{io_context}, in_buffer{Packet::max_packet_length},
+     protocol{std::move(protocol)}, remoteAddress{this->socket.remote_endpoint().address().to_string() + ":" + std::to_string(this->socket.remote_endpoint().port())}
 {
   read_header();
+  check_timeout();
 }
 
 void Channel::setProtocol (std::unique_ptr<Protocol> &&protocol)
@@ -36,6 +39,7 @@ void Channel::send (const Packet &packet)
 
 void Channel::read_header ()
 {
+  input_deadline.expires_after(std::chrono::seconds(30));
   io::async_read_until(socket, in_buffer, MatchCondition(packet_length), [&] (const auto &error, std::size_t bytes_transferred)
   {
     if (not error)
@@ -46,7 +50,7 @@ void Channel::read_header ()
       {
         std::cerr << "Received packet with length wider than 21-bit" << std::endl;
       }
-      else read_packet();
+      else if (active) read_packet();
     }
     else
     {
@@ -63,6 +67,7 @@ void Channel::read_packet ()
   {
     if (not error)
     {
+      input_deadline.expires_at(io::steady_timer::time_point::max());
       std::cout << remoteAddress << ": received packed with length " << packet_length << std::endl;
       std::istream stream(&in_buffer);
       protocol->inbound(stream);
@@ -72,6 +77,22 @@ void Channel::read_packet ()
     {
       if (error == io::error::eof) std::cout << "Client closed connection" << std::endl;
       else std::cerr << "read_packet failed: " << error.message() << std::endl;
+    }
+  });
+}
+
+void Channel::check_timeout ()
+{
+  input_deadline.async_wait([&] (const auto &error)
+  {
+    if (active)
+    {
+      if (input_deadline.expiry() <= io::steady_timer::clock_type::now())
+      {
+        active = false;
+        std::cerr << "Connection timed out" << std::endl;
+      }
+      else check_timeout();
     }
   });
 }

@@ -42,6 +42,7 @@ public:
   void close(F &&callback)
   {
     active = false;
+    input_deadline.cancel();
     boost::asio::post(write_strand, [&, callback = std::move(callback)] () 
     {
       boost::system::error_code error;
@@ -56,9 +57,13 @@ private:
   void read_header ();
   void read_packet ();
 
+  void check_timeout ();
+
   std::atomic_bool active;
 
   boost::asio::ip::tcp::socket socket;
+
+  boost::asio::steady_timer input_deadline;
 
   boost::asio::io_context::strand write_strand;
 
