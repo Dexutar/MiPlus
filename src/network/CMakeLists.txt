@@ -1,4 +1,5 @@
 include_directories(base)
+include_directories(error)
 include_directories(packet)
 include_directories(packet/handshake/client)
 include_directories(packet/status/client)
@@ -18,6 +19,7 @@ SET(NETWORK_SOURCES base/EventLoop.cpp
                     packet/status/client/RequestPacket.cpp
                     packet/status/server/PongPacket.cpp
                     packet/status/server/ResponsePacket.cpp
+                    protocol/Protocol.cpp
                     protocol/handshake/HandshakeProtocol.cpp
                     protocol/status/StatusProtocol.cpp
                     session/Session.cpp

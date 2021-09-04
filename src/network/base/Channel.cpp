@@ -3,6 +3,7 @@
 #include <chrono>
 
 #include "VarNumber.hh"
+#include "ProtocolError.hh"
 
 namespace io = boost::asio;
 
@@ -32,9 +33,10 @@ void Channel::send (const Packet &packet)
     os << packet;
     io::async_write(socket, out_buffer, io::bind_executor(write_strand, [&, self = shared_from_this()] (const auto &error, std::size_t bytes_transferred)
     {
-      if (error)
+      if (active and error)
       {
         std::cerr << "Send packet failed: " << error.message() << std::endl;
+        protocol->on_error(error);
       }
     }));
   }
@@ -46,8 +48,8 @@ void Channel::close()
   input_deadline.cancel();
   boost::asio::post(write_strand, [&, self = shared_from_this()] () 
   {
-    boost::system::error_code error;
-    socket.close(error);
+    boost::system::error_code ignored;
+    socket.close(ignored);
     std::cout << "Connection closed" << std::endl;
   });
 }
@@ -57,20 +59,26 @@ void Channel::read_header ()
   input_deadline.expires_after(std::chrono::seconds(30));
   io::async_read_until(socket, in_buffer, MatchCondition(packet_length), [&, self = shared_from_this()] (const auto &error, std::size_t bytes_transferred)
   {
-    if (not error)
+    if (active)
     {
-      in_buffer.consume(bytes_transferred);
-
-      if (packet_length > Packet::max_packet_length)
+      if (not error)
       {
-        std::cerr << "Received packet with length wider than 21-bit" << std::endl;
+        in_buffer.consume(bytes_transferred);
+
+        if (packet_length > Packet::max_packet_length)
+        {
+          std::cerr << "Received packet with length wider than 21-bit" << std::endl;
+          protocol->on_error(protocol_error::packet_length_overflow);
+        }
+        else read_packet();
       }
-      else if (active) read_packet();
-    }
-    else
-    {
-      if (error == io::error::eof) std::cout << "Client closed connection" << std::endl;
-      else std::cerr << "read_header failed: " << error.message() << std::endl;
+      else
+      {
+        if (error == io::error::eof) std::cout << "Client closed connection" << std::endl;
+        else std::cerr << "read_header failed: " << error.message() << std::endl;
+
+        protocol->on_error(error);
+      }
     }
   });
 }
@@ -80,18 +88,23 @@ void Channel::read_packet ()
   std::size_t to_read = packet_length - std::min(in_buffer.size(),packet_length);
   io::async_read(socket, in_buffer, boost::asio::transfer_at_least(to_read), [&, self = shared_from_this()] (const auto &error, std::size_t bytes_transferred)
   {
-    if (not error)
+    if (active)
     {
-      input_deadline.expires_at(io::steady_timer::time_point::max());
-      std::cout << remoteAddress << ": received packed with length " << packet_length << std::endl;
-      std::istream stream(&in_buffer);
-      protocol->inbound(stream);
-      if (active) read_header();
-    }
-    else
-    {
-      if (error == io::error::eof) std::cout << "Client closed connection" << std::endl;
-      else std::cerr << "read_packet failed: " << error.message() << std::endl;
+      if (not error)
+      {
+        input_deadline.expires_at(io::steady_timer::time_point::max());
+        std::cout << remoteAddress << ": received packed with length " << packet_length << std::endl;
+        std::istream stream(&in_buffer);
+        protocol->inbound(stream);
+        if (active) read_header();
+      }
+      else
+      {
+        if (error == io::error::eof) std::cout << "Client closed connection" << std::endl;
+        else std::cerr << "read_packet failed: " << error.message() << std::endl;
+
+        protocol->on_error(error);
+      }
     }
   });
 }
@@ -104,8 +117,8 @@ void Channel::check_timeout ()
     {
       if (input_deadline.expiry() <= io::steady_timer::clock_type::now())
       {
-        active = false;
         std::cerr << "Connection timed out" << std::endl;
+        protocol->on_error(protocol_error::timeout);
       }
       else check_timeout();
     }

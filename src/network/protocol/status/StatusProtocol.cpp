@@ -1,5 +1,7 @@
 #include "StatusProtocol.hh"
 
+#include "ProtocolError.hh"
+
 #include "Session.hh"
 
 #include "RequestPacket.hh"
@@ -21,7 +23,11 @@ void StatusProtocol::inbound (std::istream &is)
     PingPacket packet; is >> packet;
     handle(packet);
   }
-  else std::cerr << "Unexpected opcode:  " << opcode << std::endl;
+  else
+  {
+    std::cerr << "Unexpected opcode:  " << opcode << std::endl;
+    on_error(protocol_error::unexpected_opcode);
+  }
 }
 
 void StatusProtocol::handle ()
