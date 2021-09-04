@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <boost/asio.hpp>
 
 #include "Channel.hh"
@@ -22,6 +24,6 @@ public:
   void terminate();
 
 private:
-  Channel channel;
+  std::shared_ptr<Channel> channel;
   SessionRegistry &session_registry;  
 };

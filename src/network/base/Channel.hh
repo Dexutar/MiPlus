@@ -11,7 +11,7 @@
 #include "Packet.hh"
 
 
-class Channel
+class Channel : public std::enable_shared_from_this<Channel>
 {
 public:
 
@@ -29,6 +29,8 @@ public:
 
   Channel (boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, std::unique_ptr<Protocol> &&protocol);
 
+  void start ();
+
   const std::string& getRemoteAddress() const
   {
     return remoteAddress;
@@ -38,19 +40,7 @@ public:
 
   void send (const Packet &packet);
 
-  template<std::invocable F>
-  void close(F &&callback)
-  {
-    active = false;
-    input_deadline.cancel();
-    boost::asio::post(write_strand, [&, callback = std::move(callback)] () 
-    {
-      boost::system::error_code error;
-      socket.close(error);
-      std::cout << "Connection closed" << std::endl;
-      callback();
-    });
-  }
+  void close();
 
 private:
 

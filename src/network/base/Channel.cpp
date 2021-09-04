@@ -11,6 +11,9 @@ using error_code = boost::system::error_code;
 Channel::Channel (boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, std::unique_ptr<Protocol> &&protocol) 
   : active{true}, socket{std::move(socket)}, input_deadline{io_context}, write_strand{io_context}, in_buffer{Packet::max_packet_length},
      protocol{std::move(protocol)}, remoteAddress{this->socket.remote_endpoint().address().to_string() + ":" + std::to_string(this->socket.remote_endpoint().port())}
+{}
+
+void Channel::start ()
 {
   read_header();
   check_timeout();
@@ -27,7 +30,7 @@ void Channel::send (const Packet &packet)
   {
     std::ostream os(&out_buffer);
     os << packet;
-    io::async_write(socket, out_buffer, io::bind_executor(write_strand, [&] (const auto &error, std::size_t bytes_transferred)
+    io::async_write(socket, out_buffer, io::bind_executor(write_strand, [&, self = shared_from_this()] (const auto &error, std::size_t bytes_transferred)
     {
       if (error)
       {
@@ -37,10 +40,22 @@ void Channel::send (const Packet &packet)
   }
 }
 
+void Channel::close()
+{
+  active = false;
+  input_deadline.cancel();
+  boost::asio::post(write_strand, [&, self = shared_from_this()] () 
+  {
+    boost::system::error_code error;
+    socket.close(error);
+    std::cout << "Connection closed" << std::endl;
+  });
+}
+
 void Channel::read_header ()
 {
   input_deadline.expires_after(std::chrono::seconds(30));
-  io::async_read_until(socket, in_buffer, MatchCondition(packet_length), [&] (const auto &error, std::size_t bytes_transferred)
+  io::async_read_until(socket, in_buffer, MatchCondition(packet_length), [&, self = shared_from_this()] (const auto &error, std::size_t bytes_transferred)
   {
     if (not error)
     {
@@ -63,7 +78,7 @@ void Channel::read_header ()
 void Channel::read_packet ()
 {
   std::size_t to_read = packet_length - std::min(in_buffer.size(),packet_length);
-  io::async_read(socket, in_buffer, boost::asio::transfer_at_least(to_read), [&] (const auto &error, std::size_t bytes_transferred)
+  io::async_read(socket, in_buffer, boost::asio::transfer_at_least(to_read), [&, self = shared_from_this()] (const auto &error, std::size_t bytes_transferred)
   {
     if (not error)
     {
@@ -83,7 +98,7 @@ void Channel::read_packet ()
 
 void Channel::check_timeout ()
 {
-  input_deadline.async_wait([&] (const auto &error)
+  input_deadline.async_wait([&, self = shared_from_this()] (const auto &error)
   {
     if (active)
     {
