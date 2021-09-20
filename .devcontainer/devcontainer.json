@@ -1,0 +1,13 @@
+{
+	"name": "Minecraft developer environment",
+	
+	"image": "dexutar/minecraft-env-dev:latest",
+	
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"ms-vscode.cpptools"
+	],
+
+	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "vscode"
+}
