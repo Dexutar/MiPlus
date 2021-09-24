@@ -15,8 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: dexutar/minecraft-env-dev:latest
-      volumes:
-        ${{github.workspace}}:${{github.workspace}}
 
     steps:
     - uses: actions/checkout@v2
