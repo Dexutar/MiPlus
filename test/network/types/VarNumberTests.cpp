@@ -385,5 +385,5 @@ TEST(VarLong, ReadStatic)
   std::stringstream ss;
   ss.put(127);
   
-  EXPECT_EQ(128, VarNumber::readVarLong(ss));
+  EXPECT_EQ(127, VarNumber::readVarLong(ss));
 }
