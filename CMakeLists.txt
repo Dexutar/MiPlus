@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(Minecraft-Cpp-Server  VERSION 1.0
+project(MiPlus  VERSION 1.0
                               DESCRIPTION "A cpp Minecraft server"
                               LANGUAGES CXX)
 
