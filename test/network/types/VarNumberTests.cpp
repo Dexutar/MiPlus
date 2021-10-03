@@ -387,3 +387,11 @@ TEST(VarLong, ReadStatic)
   
   EXPECT_EQ(127, VarNumber::readVarLong(ss));
 }
+
+TEST(WriteVarNumber, WriteZero) 
+{
+  std::stringstream ss;
+  VarNumber::writeVarNumber(ss,0);
+  
+  EXPECT_EQ(0, ss.get());
+}
