@@ -17,5 +17,8 @@
 		"matepek.vscode-catch2-test-adapter"
 	],
 
-	"remoteUser": "${localEnv:USER}"
+	"runArgs": ["--init"],
+	"mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
+	"remoteUser": "${localEnv:USER}",
+	"overrideCommand": false
 }
