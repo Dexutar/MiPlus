@@ -2,10 +2,11 @@
 	"name": "Minecraft developer environment",
 	
 	"dockerFile": "../containers/developer/Dockerfile",
+	"build": {"args": {"UNAME": "${localEnv:USER}"}},
 	
+	// Minecraft server default port
 	"forwardPorts": [25565],
 
-	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"ms-vscode.cpptools",
 		"ms-vscode.cmake-tools",
@@ -16,6 +17,5 @@
 		"matepek.vscode-catch2-test-adapter"
 	],
 
-	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "vscode"
+	"remoteUser": "${localEnv:USER}"
 }
