@@ -14,7 +14,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: dexutar/minecraft-env-dev:latest
+      image: dexutar/miplus-build:latest
 
     steps:
     - name: Checkout
