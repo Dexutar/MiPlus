@@ -11,6 +11,7 @@ RUN dnf install -y dnf-plugins-core && \
   dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo && \
   dnf install -y docker-ce-cli
 
+# Allow Docker from Docker
 RUN echo -e "#!/bin/sh\n\
     sudoIf() { if [ \"\$(id -u)\" -ne 0 ]; then sudo \"\$@\"; else \"\$@\"; fi }\n\
     SOCKET_GID=\$(stat -c '%g' /var/run/docker.sock) \n\
