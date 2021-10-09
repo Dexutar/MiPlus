@@ -1,2 +1,2 @@
 FROM fedora:latest
-RUN dnf install -y g++ cmake boost gtest git findutils
+RUN dnf install -y g++ cmake boost-devel gtest-devel git findutils
