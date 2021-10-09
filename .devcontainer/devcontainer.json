@@ -1,7 +1,7 @@
 {
 	"name": "Minecraft developer environment",
 	
-	"image": "dexutar/minecraft-env-dev:latest",
+	"dockerFile": "../containers/developer/Dockerfile",
 	
 	"forwardPorts": [25565],
 
