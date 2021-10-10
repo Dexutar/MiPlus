@@ -2,7 +2,7 @@
 	"name": "Minecraft developer environment",
 	
 	"dockerFile": "../containers/developer/Dockerfile",
-	"build": {"args": {"UNAME": "${localEnv:USER}"}},
+	"build": {"args": {"UNAME": "${localEnv:USER}${localEnv:USERNAME}"}},
 	
 	// Minecraft server default port
 	"forwardPorts": [25565],
@@ -19,6 +19,6 @@
 
 	"runArgs": ["--init"],
 	"mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
-	"remoteUser": "${localEnv:USER}",
+	"remoteUser": "${localEnv:USER}${localEnv:USERNAME}",
 	"overrideCommand": false
 }
