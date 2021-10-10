@@ -18,7 +18,7 @@
 	],
 
 	"runArgs": ["--init"],
-	"mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
+	"mounts": [ "source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind"],
 	"remoteUser": "${localEnv:USER}${localEnv:USERNAME}",
 	"overrideCommand": false
 }

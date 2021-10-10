@@ -11,15 +11,17 @@ RUN dnf install -y dnf-plugins-core && \
   dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo && \
   dnf install -y docker-ce-cli
 
-# Allow Docker from Docker
+# Default to root only access to the Docker socket, set up non-root init script
+RUN touch /var/run/docker-host.sock \
+    && ln -s /var/run/docker-host.sock /var/run/docker.sock \
+    && dnf install -y socat
+
+# Create docker-init.sh to spin up socat
 RUN echo -e "#!/bin/sh\n\
     sudoIf() { if [ \"\$(id -u)\" -ne 0 ]; then sudo \"\$@\"; else \"\$@\"; fi }\n\
-    SOCKET_GID=\$(stat -c '%g' /var/run/docker.sock) \n\
-    if [ \"${SOCKET_GID}\" != '0' ]; then\n\
-        if [ \"\$(cat /etc/group | grep :\${SOCKET_GID}:)\" = '' ]; then sudoIf groupadd --gid \${SOCKET_GID} docker-host; fi \n\
-        if [ \"\$(id ${UNAME} | grep -E \"groups=.*(=|,)\${SOCKET_GID}\(\")\" = '' ]; then sudoIf usermod -aG \${SOCKET_GID} ${UNAME}; fi\n\
-    fi\n\
-    exec \"\$@\"" > /usr/local/share/docker-init.sh \
+    sudoIf rm -rf /var/run/docker.sock\n\
+    ((sudoIf socat UNIX-LISTEN:/var/run/docker.sock,fork,mode=660,user=${UNAME} UNIX-CONNECT:/var/run/docker-host.sock) 2>&1 >> /tmp/vscr-docker-from-docker.log) & > /dev/null\n\
+    \"\$@\"" >> /usr/local/share/docker-init.sh \
     && chmod +x /usr/local/share/docker-init.sh
 
 ENTRYPOINT [ "/usr/local/share/docker-init.sh" ]
