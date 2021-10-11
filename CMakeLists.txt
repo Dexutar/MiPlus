@@ -4,6 +4,13 @@ project(MiPlus  VERSION 1.0
                               DESCRIPTION "A cpp Minecraft server"
                               LANGUAGES CXX)
 
+find_package (Boost 1.75 REQUIRED)
+find_package (Threads REQUIRED)
+find_package (GTest REQUIRED)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
 option(ENABLE_COVERAGE "Enable coverage" OFF)
 
 if (ENABLE_COVERAGE)
@@ -12,13 +19,6 @@ if (ENABLE_COVERAGE)
 endif()
 
 enable_testing()
-
-find_package (Boost 1.75 REQUIRED)
-find_package (Threads REQUIRED)
-find_package (GTest REQUIRED)
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_subdirectory(src)
 add_subdirectory(test)
