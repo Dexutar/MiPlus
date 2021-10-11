@@ -29,4 +29,4 @@ RUN echo -e "#!/bin/sh\n\
 ENTRYPOINT [ "/usr/local/share/docker-init.sh" ]
 CMD [ "sleep", "infinity" ]
 
-RUN dnf install -y g++ gdb cmake boost-devel gtest-devel git findutils
+RUN dnf install -y g++ gdb cmake boost-devel gtest-devel git findutils lcov
