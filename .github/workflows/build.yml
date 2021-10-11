@@ -31,8 +31,8 @@ jobs:
 
     - name: Generate coverage report
       run: |
-        lcov --rc lcov_branch_coverage=1 -c -i -d . -o coverage.base
-        lcov --rc lcov_branch_coverage=1 -d . -c -o coverage.capture
+        lcov --rc lcov_branch_coverage=1 -c -i -d ${{github.workspace}} -o coverage.base
+        lcov --rc lcov_branch_coverage=1 -d ${{github.workspace}} -c -o coverage.capture
         lcov --rc lcov_branch_coverage=1 -a coverage.base -a coverage.capture -o coverage.info
         lcov --rc lcov_branch_coverage=1 -r coverage.info '/usr/include/*' '${{github.workspace}}/test/*' -o coverage.info
       working-directory: ${{github.workspace}}
