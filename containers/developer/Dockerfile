@@ -3,8 +3,10 @@ FROM fedora:latest
 # Define user build arguments
 ARG UNAME=user
 
+RUN dnf install -y passwd
+
 # Add user
-RUN useradd -m -s /bin/bash ${UNAME}
+RUN useradd -G wheel -m -s /bin/bash ${UNAME} && passwd -d ${UNAME}
 
 # Install Docker CE CLI
 RUN dnf install -y dnf-plugins-core && \
@@ -27,4 +29,4 @@ RUN echo -e "#!/bin/sh\n\
 ENTRYPOINT [ "/usr/local/share/docker-init.sh" ]
 CMD [ "sleep", "infinity" ]
 
-RUN dnf install -y g++ gdb cmake boost-devel gtest-devel git passwd findutils
+RUN dnf install -y g++ gdb cmake boost-devel gtest-devel git findutils
