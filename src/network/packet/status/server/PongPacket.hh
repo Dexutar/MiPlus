@@ -4,13 +4,13 @@
 
 class PongPacket : public Packet
 {
-public:
+ public:
   static constexpr std::uint8_t opcode = 1;
 
-  PongPacket (std::int64_t payload) : payload {payload} {}
+  PongPacket(std::int64_t payload) : payload{payload} {}
 
-private:
-  std::ostream& write (std::ostream &os) const override;
+ private:
+  std::ostream& write(std::ostream& os) const override;
 
   std::int64_t payload;
 };

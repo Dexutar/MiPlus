@@ -1,8 +1,7 @@
 #pragma once
 
-#include <optional>
-
 #include <boost/asio.hpp>
+#include <optional>
 
 #include "EventLoop.hh"
 #include "Session.hh"
@@ -10,16 +9,14 @@
 
 class Bootstrap
 {
-public:
+ public:
+  Bootstrap(std::uint16_t port, SessionRegistry &sessions);
 
-  Bootstrap (std::uint16_t port, SessionRegistry &sessions);
+  void shutdown();
+  void join();
 
-  void shutdown ();
-  void join ();
-
-private:
-
-  void accept ();
+ private:
+  void accept();
 
   EventLoop boss;
   EventLoop worker;
@@ -27,6 +24,6 @@ private:
   boost::asio::ip::tcp::acceptor acceptor;
 
   std::optional<boost::asio::ip::tcp::socket> socket;
-  
+
   SessionRegistry &sessions;
 };

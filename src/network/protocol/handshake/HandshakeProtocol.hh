@@ -1,18 +1,15 @@
 #pragma once
 
-#include "Protocol.hh"
-
 #include "HandshakePacket.hh"
+#include "Protocol.hh"
 
 class HandshakeProtocol : public Protocol
 {
-public:
+ public:
+  HandshakeProtocol(Session &session) : Protocol{session} {}
 
-  HandshakeProtocol (Session &session) : Protocol{session} {}
+  void inbound(std::istream &is) override;
 
-  void inbound (std::istream &is) override;
-
-private:
-
-  void handle (const HandshakePacket &packet);
+ private:
+  void handle(const HandshakePacket &packet);
 };

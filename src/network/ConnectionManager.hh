@@ -1,14 +1,14 @@
 #pragma once
 
-#include "SessionRegistry.hh"
 #include "Bootstrap.hh"
+#include "SessionRegistry.hh"
 
 class ConnectionManager
 {
-public:
-  ConnectionManager (std::uint16_t port);
+ public:
+  ConnectionManager(std::uint16_t port);
 
-private:
+ private:
   Bootstrap bootstrap;
   SessionRegistry sessionRegistry;
 };

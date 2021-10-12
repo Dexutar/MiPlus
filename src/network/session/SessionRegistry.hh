@@ -1,24 +1,26 @@
 #pragma once
 
-#include <unordered_map>
 #include <mutex>
+#include <unordered_map>
 
 #include "Session.hh"
 
 class SessionRegistry
 {
-public:
-
-  template <class Key, class ...Value>
-  bool emplace (Key &&key, Value && ... value)
+ public:
+  template <class Key, class... Value>
+  bool emplace(Key &&key, Value &&...value)
   {
-    std::lock_guard<std::mutex> lck(sessions_mutex);  
-    return sessions.emplace(std::piecewise_construct,std::forward_as_tuple(key),std::forward_as_tuple(std::forward<Value>(value)..., *this)).second;
+    std::lock_guard<std::mutex> lck(sessions_mutex);
+    return sessions
+        .emplace(std::piecewise_construct, std::forward_as_tuple(key),
+                 std::forward_as_tuple(std::forward<Value>(value)..., *this))
+        .second;
   }
 
-  void erase (const std::string &key);
+  void erase(const std::string &key);
 
-private:
+ private:
   std::mutex sessions_mutex;
   std::unordered_map<std::string, Session> sessions;
 };

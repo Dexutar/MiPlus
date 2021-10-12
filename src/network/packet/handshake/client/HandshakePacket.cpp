@@ -2,10 +2,10 @@
 
 #include <sstream>
 
-#include "VarString.hh"
 #include "BasicTypes.hh"
+#include "VarString.hh"
 
-std::istream& operator>> (std::istream &is, HandshakePacket &packet)
+std::istream &operator>>(std::istream &is, HandshakePacket &packet)
 {
   packet.version = VarNumber::readVarInt(is);
   packet.server_address = VarString::readVarString(is);
@@ -14,11 +14,11 @@ std::istream& operator>> (std::istream &is, HandshakePacket &packet)
   return is;
 }
 
-std::ostream& HandshakePacket::write (std::ostream &os) const
+std::ostream &HandshakePacket::write(std::ostream &os) const
 {
   std::stringbuf sb;
   std::ostream data{&sb};
-  
+
   VarNumber::writeVarNumber(data, HandshakePacket::opcode);
   VarNumber::writeVarNumber(data, version);
   VarString::writeVarString(data, server_address);
@@ -28,12 +28,9 @@ std::ostream& HandshakePacket::write (std::ostream &os) const
   return write_header(os, data);
 }
 
-ConnectionState HandshakePacket::getRequestedState() const
-{
-  return requested_state;
-}
+ConnectionState HandshakePacket::getRequestedState() const { return requested_state; }
 
-void HandshakePacket::print () const
+void HandshakePacket::print() const
 {
   std::cout << "[Handshake Packet]" << std::endl << std::endl;
   std::cout << "Version: " << version << std::endl;

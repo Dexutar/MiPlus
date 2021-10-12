@@ -4,34 +4,41 @@ namespace io = boost::asio;
 using tcp = io::ip::tcp;
 using error_code = boost::system::error_code;
 
-Bootstrap::Bootstrap (std::uint16_t port, SessionRegistry &sessions) : boss{2}, worker{4}, acceptor{boss.getContext(),tcp::endpoint{tcp::v4(),port}}, sessions{sessions}
+Bootstrap::Bootstrap(std::uint16_t port, SessionRegistry &sessions)
+    : boss{2},
+      worker{4},
+      acceptor{boss.getContext(), tcp::endpoint{tcp::v4(), port}},
+      sessions{sessions}
 {
   accept();
 }
 
-void Bootstrap::shutdown ()
+void Bootstrap::shutdown()
 {
   boss.shutdown();
   worker.shutdown();
 }
 
-void Bootstrap::join ()
+void Bootstrap::join()
 {
   boss.join();
   worker.join();
 }
 
-void Bootstrap::accept ()
+void Bootstrap::accept()
 {
   socket.emplace(worker.getContext());
-  
-  acceptor.async_accept(*socket, [&] (const auto &error)
-  {
-    if (not error)
-    {
-      std::string id = socket->remote_endpoint().address().to_string() + ":" + std::to_string(socket->remote_endpoint().port());
-      sessions.emplace(std::move(id), std::move(*socket), worker.getContext());
-    }
-    accept();
-  });
+
+  acceptor.async_accept(*socket,
+                        [&](const auto &error)
+                        {
+                          if (not error)
+                          {
+                            std::string id = socket->remote_endpoint().address().to_string() + ":" +
+                                             std::to_string(socket->remote_endpoint().port());
+                            sessions.emplace(std::move(id), std::move(*socket),
+                                             worker.getContext());
+                          }
+                          accept();
+                        });
 }

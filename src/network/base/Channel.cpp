@@ -2,43 +2,55 @@
 
 #include <chrono>
 
-#include "VarNumber.hh"
 #include "ProtocolError.hh"
+#include "VarNumber.hh"
 
 namespace io = boost::asio;
 
 using error_code = boost::system::error_code;
 
-Channel::Channel (boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, std::unique_ptr<Protocol> &&protocol) 
-  : active{true}, socket{std::move(socket)}, input_deadline{io_context}, write_strand{io_context}, in_buffer{Packet::max_packet_length},
-     protocol{std::move(protocol)}, remoteAddress{this->socket.remote_endpoint().address().to_string() + ":" + std::to_string(this->socket.remote_endpoint().port())}
-{}
+Channel::Channel(boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context,
+                 std::unique_ptr<Protocol> &&protocol)
+    : active{true},
+      socket{std::move(socket)},
+      input_deadline{io_context},
+      write_strand{io_context},
+      in_buffer{Packet::max_packet_length},
+      protocol{std::move(protocol)},
+      remoteAddress{this->socket.remote_endpoint().address().to_string() + ":" +
+                    std::to_string(this->socket.remote_endpoint().port())}
+{
+}
 
-void Channel::start ()
+void Channel::start()
 {
   read_header();
   check_timeout();
 }
 
-void Channel::setProtocol (std::unique_ptr<Protocol> &&protocol)
+void Channel::setProtocol(std::unique_ptr<Protocol> &&protocol)
 {
   this->protocol = std::move(protocol);
 }
 
-void Channel::send (const Packet &packet)
+void Channel::send(const Packet &packet)
 {
   if (active)
   {
     std::ostream os(&out_buffer);
     os << packet;
-    io::async_write(socket, out_buffer, io::bind_executor(write_strand, [&, self = shared_from_this()] (const auto &error, std::size_t bytes_transferred)
-    {
-      if (active and error)
-      {
-        std::cerr << "Send packet failed: " << error.message() << std::endl;
-        protocol->on_error(error);
-      }
-    }));
+    io::async_write(
+        socket, out_buffer,
+        io::bind_executor(
+            write_strand,
+            [&, self = shared_from_this()](const auto &error, std::size_t bytes_transferred)
+            {
+              if (active and error)
+              {
+                std::cerr << "Send packet failed: " << error.message() << std::endl;
+                protocol->on_error(error);
+              }
+            }));
   }
 }
 
@@ -46,88 +58,101 @@ void Channel::close()
 {
   active = false;
   input_deadline.cancel();
-  boost::asio::post(write_strand, [&, self = shared_from_this()] () 
-  {
-    boost::system::error_code ignored;
-    socket.close(ignored);
-    std::cout << "Connection closed" << std::endl;
-  });
+  boost::asio::post(write_strand,
+                    [&, self = shared_from_this()]()
+                    {
+                      boost::system::error_code ignored;
+                      socket.close(ignored);
+                      std::cout << "Connection closed" << std::endl;
+                    });
 }
 
-void Channel::read_header ()
+void Channel::read_header()
 {
   input_deadline.expires_after(std::chrono::seconds(30));
-  io::async_read_until(socket, in_buffer, MatchCondition(packet_length), [&, self = shared_from_this()] (const auto &error, std::size_t bytes_transferred)
-  {
-    if (active)
-    {
-      if (not error)
+  io::async_read_until(
+      socket, in_buffer, MatchCondition(packet_length),
+      [&, self = shared_from_this()](const auto &error, std::size_t bytes_transferred)
       {
-        in_buffer.consume(bytes_transferred);
-
-        if (packet_length > Packet::max_packet_length)
+        if (active)
         {
-          std::cerr << "Received packet with length wider than 21-bit" << std::endl;
-          protocol->on_error(protocol_error::packet_length_overflow);
+          if (not error)
+          {
+            in_buffer.consume(bytes_transferred);
+
+            if (packet_length > Packet::max_packet_length)
+            {
+              std::cerr << "Received packet with length wider than 21-bit" << std::endl;
+              protocol->on_error(protocol_error::packet_length_overflow);
+            }
+            else
+              read_packet();
+          }
+          else
+          {
+            if (error == io::error::eof)
+              std::cout << "Client closed connection" << std::endl;
+            else
+              std::cerr << "read_header failed: " << error.message() << std::endl;
+
+            protocol->on_error(error);
+          }
         }
-        else read_packet();
-      }
-      else
-      {
-        if (error == io::error::eof) std::cout << "Client closed connection" << std::endl;
-        else std::cerr << "read_header failed: " << error.message() << std::endl;
-
-        protocol->on_error(error);
-      }
-    }
-  });
+      });
 }
 
-void Channel::read_packet ()
+void Channel::read_packet()
 {
-  std::size_t to_read = packet_length - std::min(in_buffer.size(),packet_length);
-  io::async_read(socket, in_buffer, boost::asio::transfer_at_least(to_read), [&, self = shared_from_this()] (const auto &error, std::size_t bytes_transferred)
-  {
-    if (active)
-    {
-      if (not error)
-      {
-        input_deadline.expires_at(io::steady_timer::time_point::max());
-        std::cout << remoteAddress << ": received packed with length " << packet_length << std::endl;
-        std::istream stream(&in_buffer);
-        protocol->inbound(stream);
-        if (active) read_header();
-      }
-      else
-      {
-        if (error == io::error::eof) std::cout << "Client closed connection" << std::endl;
-        else std::cerr << "read_packet failed: " << error.message() << std::endl;
+  std::size_t to_read = packet_length - std::min(in_buffer.size(), packet_length);
+  io::async_read(socket, in_buffer, boost::asio::transfer_at_least(to_read),
+                 [&, self = shared_from_this()](const auto &error, std::size_t bytes_transferred)
+                 {
+                   if (active)
+                   {
+                     if (not error)
+                     {
+                       input_deadline.expires_at(io::steady_timer::time_point::max());
+                       std::cout << remoteAddress << ": received packed with length "
+                                 << packet_length << std::endl;
+                       std::istream stream(&in_buffer);
+                       protocol->inbound(stream);
+                       if (active) read_header();
+                     }
+                     else
+                     {
+                       if (error == io::error::eof)
+                         std::cout << "Client closed connection" << std::endl;
+                       else
+                         std::cerr << "read_packet failed: " << error.message() << std::endl;
 
-        protocol->on_error(error);
-      }
-    }
-  });
+                       protocol->on_error(error);
+                     }
+                   }
+                 });
 }
 
-void Channel::check_timeout ()
+void Channel::check_timeout()
 {
-  input_deadline.async_wait([&, self = shared_from_this()] (const auto &error)
-  {
-    if (active)
-    {
-      if (input_deadline.expiry() <= io::steady_timer::clock_type::now())
+  input_deadline.async_wait(
+      [&, self = shared_from_this()](const auto &error)
       {
-        std::cerr << "Connection timed out" << std::endl;
-        protocol->on_error(protocol_error::timeout);
-      }
-      else check_timeout();
-    }
-  });
+        if (active)
+        {
+          if (input_deadline.expiry() <= io::steady_timer::clock_type::now())
+          {
+            std::cerr << "Connection timed out" << std::endl;
+            protocol->on_error(protocol_error::timeout);
+          }
+          else
+            check_timeout();
+        }
+      });
 }
 
-std::pair<Channel::MatchCondition::iterator, bool> Channel::MatchCondition::operator() (iterator begin, iterator end)
+std::pair<Channel::MatchCondition::iterator, bool> Channel::MatchCondition::operator()(
+    iterator begin, iterator end)
 {
-  auto [valid, it, value] = VarNumber::readVarInt(begin,end);
+  auto [valid, it, value] = VarNumber::readVarInt(begin, end);
   packet_length = value;
-  return {it,valid};
+  return {it, valid};
 }

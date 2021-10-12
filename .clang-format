@@ -1,0 +1,6 @@
+BasedOnStyle: Google
+ColumnLimit: 100
+BreakBeforeBraces: Allman 
+NamespaceIndentation: All
+BraceWrapping:
+  BeforeLambdaBody: false

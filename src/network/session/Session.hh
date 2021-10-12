@@ -1,8 +1,7 @@
 #pragma once
 
-#include <memory>
-
 #include <boost/asio.hpp>
+#include <memory>
 
 #include "Channel.hh"
 #include "ConnectionState.hh"
@@ -12,18 +11,19 @@ class SessionRegistry;
 
 class Session
 {
-public:
-  Session (boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, SessionRegistry &session_registry);
+ public:
+  Session(boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context,
+          SessionRegistry &session_registry);
 
-  std::string getID () const;
+  std::string getID() const;
 
-  void setState (ConnectionState state);
+  void setState(ConnectionState state);
 
-  void send (const Packet &message);
+  void send(const Packet &message);
 
   void terminate();
 
-private:
+ private:
   std::shared_ptr<Channel> channel;
-  SessionRegistry &session_registry;  
+  SessionRegistry &session_registry;
 };

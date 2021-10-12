@@ -1,21 +1,18 @@
 #pragma once
 
+#include <boost/system/error_code.hpp>
 #include <iostream>
-
-#include <boost/system/error_code.hpp> 
 
 class Session;
 
 class Protocol
 {
-public:
+ public:
+  Protocol(Session &session) : session{session} {}
 
-  Protocol (Session &session) : session{session}
-  {}
+  virtual void inbound(std::istream &is) = 0;
+  virtual void on_error(const boost::system::error_code &error);
 
-  virtual void inbound (std::istream &is) = 0;
-  virtual void on_error (const boost::system::error_code& error);
-
-protected:
+ protected:
   Session &session;
 };

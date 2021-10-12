@@ -2,22 +2,19 @@
 
 #include "BasicTypes.hh"
 
-std::istream& operator>> (std::istream &is, PingPacket &packet)
+std::istream &operator>>(std::istream &is, PingPacket &packet)
 {
   packet.payload = BasicTypes::readUint64(is);
   return is;
 }
 
-std::int64_t PingPacket::getPayload() const
-{
-  return payload;
-}
+std::int64_t PingPacket::getPayload() const { return payload; }
 
-std::ostream& PingPacket::write (std::ostream &os) const
+std::ostream &PingPacket::write(std::ostream &os) const
 {
   std::stringbuf sb;
   std::ostream data{&sb};
-  
+
   VarNumber::writeVarNumber(data, PingPacket::opcode);
   BasicTypes::writeUint64(data, payload);
 

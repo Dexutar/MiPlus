@@ -1,9 +1,6 @@
 #include <iostream>
 
-#include "Server.hh"
 #include "ConnectionManager.hh"
+#include "Server.hh"
 
-int main ()
-{
-  ConnectionManager cm{25565};
-}
+int main() { ConnectionManager cm{25565}; }

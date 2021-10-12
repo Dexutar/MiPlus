@@ -1,7 +1,7 @@
 #pragma once
 
+#include <boost/system/error_code.hpp>
 #include <string>
-#include <boost/system/error_code.hpp> 
 
 enum class protocol_error
 {
@@ -14,24 +14,21 @@ namespace boost
 {
   namespace system
   {
-    template <> struct is_error_code_enum<protocol_error> : std::true_type
+    template <>
+    struct is_error_code_enum<protocol_error> : std::true_type
     {
     };
-  }
-}
-
+  }  // namespace system
+}  // namespace boost
 
 namespace detail
 {
   class protocol_error_category : public boost::system::error_category
   {
-  public:
-    virtual const char *name() const noexcept override final 
-    { 
-      return "Protocol Error"; 
-    }
+   public:
+    virtual const char* name() const noexcept override final { return "Protocol Error"; }
 
-    virtual std::string message (int c) const override final
+    virtual std::string message(int c) const override final
     {
       switch (static_cast<protocol_error>(c))
       {
@@ -44,7 +41,7 @@ namespace detail
       }
     }
   };
-}
+}  // namespace detail
 
 extern inline const detail::protocol_error_category& protocol_error_category()
 {
@@ -52,7 +49,7 @@ extern inline const detail::protocol_error_category& protocol_error_category()
   return category;
 }
 
-inline boost::system::error_code make_error_code (protocol_error error)
+inline boost::system::error_code make_error_code(protocol_error error)
 {
   return {static_cast<int>(error), protocol_error_category()};
 }
