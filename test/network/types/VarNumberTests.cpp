@@ -14,6 +14,15 @@ constexpr void writeBytes(std::ostream &os, std::uint8_t byte, std::uint8_t coun
   }
 }
 
+void checkBytes(std::istream &is, std::uint8_t byte, std::uint8_t count)
+{
+  while (count > 0)
+  {
+    EXPECT_EQ(byte, is.get());
+    --count;
+  }
+}
+
 TEST(VarInt, ReadZero)
 {
   std::stringstream ss;
@@ -504,9 +513,42 @@ TEST(WriteVarNumber, WriteFiveBytes)
   std::stringstream ss;
   VarNumber::writeVarNumber(ss, 2147483647);
 
-  EXPECT_EQ(0xff, ss.get());
-  EXPECT_EQ(0xff, ss.get());
-  EXPECT_EQ(0xff, ss.get());
-  EXPECT_EQ(0xff, ss.get());
+  checkBytes(ss, 0xff, 4);
   EXPECT_EQ(0x07, ss.get());
+}
+
+TEST(WriteVarNumber, WriteNegativeOneInt)
+{
+  std::stringstream ss;
+  VarNumber::writeVarNumber(ss, static_cast<std::int32_t>(-1));
+
+  checkBytes(ss, 0xff, 4);
+  EXPECT_EQ(0x0f, ss.get());
+}
+
+TEST(WriteVarNumber, WriteNegativeOneLong)
+{
+  std::stringstream ss;
+  VarNumber::writeVarNumber(ss, static_cast<std::int64_t>(-1));
+
+  checkBytes(ss, 0xff, 9);
+  EXPECT_EQ(0x01, ss.get());
+}
+
+TEST(WriteVarNumber, WriteMinInt)
+{
+  std::stringstream ss;
+  VarNumber::writeVarNumber(ss, std::numeric_limits<std::int32_t>::min());
+
+  checkBytes(ss, 0x80, 4);
+  EXPECT_EQ(0x08, ss.get());
+}
+
+TEST(WriteVarNumber, WriteMinLong)
+{
+  std::stringstream ss;
+  VarNumber::writeVarNumber(ss, std::numeric_limits<std::int64_t>::min());
+
+  checkBytes(ss, 0x80, 9);
+  EXPECT_EQ(0x01, ss.get());
 }
