@@ -471,3 +471,42 @@ TEST(WriteVarNumber, WriteZero)
 
   EXPECT_EQ(0, ss.get());
 }
+
+TEST(WriteVarNumber, WriteOneByte)
+{
+  std::stringstream ss;
+  VarNumber::writeVarNumber(ss, 127);
+
+  EXPECT_EQ(0x7f, ss.get());
+}
+
+TEST(WriteVarNumber, WriteTwoBytes)
+{
+  std::stringstream ss;
+  VarNumber::writeVarNumber(ss, 128);
+
+  EXPECT_EQ(0x80, ss.get());
+  EXPECT_EQ(0x01, ss.get());
+}
+
+TEST(WriteVarNumber, WriteThreeBytes)
+{
+  std::stringstream ss;
+  VarNumber::writeVarNumber(ss, 25565);
+
+  EXPECT_EQ(0xdd, ss.get());
+  EXPECT_EQ(0xc7, ss.get());
+  EXPECT_EQ(0x01, ss.get());
+}
+
+TEST(WriteVarNumber, WriteFiveBytes)
+{
+  std::stringstream ss;
+  VarNumber::writeVarNumber(ss, 2147483647);
+
+  EXPECT_EQ(0xff, ss.get());
+  EXPECT_EQ(0xff, ss.get());
+  EXPECT_EQ(0xff, ss.get());
+  EXPECT_EQ(0xff, ss.get());
+  EXPECT_EQ(0x07, ss.get());
+}
