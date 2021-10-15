@@ -19,10 +19,18 @@ class VarNumber
 
     do
     {
-      if (it == end) return {false, end, 0};
+      if (it == end)
+      {
+        return {false, end, 0};
+      }
+
       read = *(it++);
       result |= static_cast<std::int32_t>(read & 0x7F) << (7 * indx++);
-      if (indx > 5) throw std::overflow_error("VarInt is too big");
+
+      if (indx > 5)
+      {
+        throw std::overflow_error("VarInt is too big");
+      }
     } while (read & 0x80);
 
     return {true, it, result};
@@ -39,10 +47,18 @@ class VarNumber
 
     do
     {
-      if (it == end) return {false, begin, 0};
+      if (it == end)
+      {
+        return {false, begin, 0};
+      }
+
       read = *(it++);
       result |= static_cast<std::int64_t>(read & 0x7F) << (indx++ * 7);
-      if (indx > 10) throw std::overflow_error("VarLong is too big");
+
+      if (indx > 10)
+      {
+        throw std::overflow_error("VarLong is too big");
+      }
     } while (read & 0x80);
 
     return {true, it, result};
@@ -58,7 +74,12 @@ class VarNumber
     {
       std::uint8_t temp = value & 0x7F;
       value >>= 7;
-      if (value != 0) temp |= 0x80;
+
+      if (value != 0)
+      {
+        temp |= 0x80;
+      }
+
       os << temp;
     } while (value != 0);
   }
