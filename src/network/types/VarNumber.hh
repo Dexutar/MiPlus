@@ -70,17 +70,14 @@ class VarNumber
   template <std::integral number>
   static void writeVarNumber(std::ostream &os, number value)
   {
-    do
+    constexpr number mask = static_cast<number>(-1) ^ 0x7f;
+
+    while ((value & mask) != 0)
     {
-      std::uint8_t temp = value & 0x7F;
-      value >>= 7;
+      os << static_cast<std::uint8_t>(value & 0x7F | 0x80);
+      value = static_cast<std::make_unsigned<number>::type>(value) >> 7;
+    }
 
-      if (value != 0)
-      {
-        temp |= 0x80;
-      }
-
-      os << temp;
-    } while (value != 0);
+    os << static_cast<std::uint8_t>(value);
   }
 };
