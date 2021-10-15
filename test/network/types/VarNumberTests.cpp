@@ -517,6 +517,15 @@ TEST(WriteVarNumber, WriteFiveBytes)
   EXPECT_EQ(0x07, ss.get());
 }
 
+TEST(WriteVarNumber, WriteNineBytes)
+{
+  std::stringstream ss;
+  VarNumber::writeVarNumber(ss, std::numeric_limits<std::int64_t>::max());
+
+  checkBytes(ss, 0xff, 8);
+  EXPECT_EQ(0x7f, ss.get());
+}
+
 TEST(WriteVarNumber, WriteNegativeOneInt)
 {
   std::stringstream ss;
