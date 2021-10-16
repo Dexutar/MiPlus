@@ -18,6 +18,13 @@ class NetworkTypeTest : public ::testing::Test
 
   void checkBytes(std::uint8_t byte, std::uint8_t count)
   {
+    std::streampos pos = stream.tellg();
+
+    stream.seekg(0, std::ios::end);
+    ASSERT_LE(count, stream.tellg() - pos);
+
+    stream.seekg(pos, std::ios::beg);
+
     while (count > 0)
     {
       EXPECT_EQ(byte, stream.get());
