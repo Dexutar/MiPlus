@@ -1,17 +1,19 @@
 #include <gtest/gtest.h>
 
 #include <limits>
-#include <sstream>
 
-#include "NetworkTypeTests.hh"
+#include "NetworkTypeTest.hh"
 #include "VarNumber.hh"
 
-TEST(VarInt, ReadZero)
+class VarIntTest : public NetworkTypeTest
 {
-  std::stringstream ss;
-  ss.put(0);
+};
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+TEST_F(VarIntTest, ReadsZero)
+{
+  writeBytes(0x00, 1);
+
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarInt(begin, end);
@@ -21,12 +23,11 @@ TEST(VarInt, ReadZero)
   EXPECT_EQ(0, value);
 }
 
-TEST(VarInt, ReadOneByte)
+TEST_F(VarIntTest, ReadsOneByte)
 {
-  std::stringstream ss;
-  ss.put(0x7f);
+  writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarInt(begin, end);
@@ -36,13 +37,12 @@ TEST(VarInt, ReadOneByte)
   EXPECT_EQ(127, value);
 }
 
-TEST(VarInt, ReadTwoBytes)
+TEST_F(VarIntTest, ReadsTwoBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 1);
-  ss.put(0x7f);
+  writeBytes(0xff, 1);
+  writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarInt(begin, end);
@@ -52,13 +52,12 @@ TEST(VarInt, ReadTwoBytes)
   EXPECT_EQ(16383, value);
 }
 
-TEST(VarInt, ReadThreeBytes)
+TEST_F(VarIntTest, ReadsThreeBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 2);
-  ss.put(0x7f);
+  writeBytes(0xff, 2);
+  writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarInt(begin, end);
@@ -68,13 +67,12 @@ TEST(VarInt, ReadThreeBytes)
   EXPECT_EQ(2097151, value);
 }
 
-TEST(VarInt, ReadFourBytes)
+TEST_F(VarIntTest, ReadsFourBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 3);
-  ss.put(0x7f);
+  writeBytes(0xff, 3);
+  writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarInt(begin, end);
@@ -84,13 +82,12 @@ TEST(VarInt, ReadFourBytes)
   EXPECT_EQ(268435455, value);
 }
 
-TEST(VarInt, ReadFiveBytes)
+TEST_F(VarIntTest, ReadsFiveBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 4);
-  ss.put(0x0f);
+  writeBytes(0xff, 4);
+  writeBytes(0x0f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarInt(begin, end);
@@ -100,13 +97,12 @@ TEST(VarInt, ReadFiveBytes)
   EXPECT_EQ(-1, value);
 }
 
-TEST(VarInt, ReadMaxInt)
+TEST_F(VarIntTest, ReadsMaxInt)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 4);
-  ss.put(0x07);
+  writeBytes(0xff, 4);
+  writeBytes(0x07, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarInt(begin, end);
@@ -116,13 +112,12 @@ TEST(VarInt, ReadMaxInt)
   EXPECT_EQ(std::numeric_limits<std::int32_t>::max(), value);
 }
 
-TEST(VarInt, ReadMinInt)
+TEST_F(VarIntTest, ReadsMinInt)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0x80, 4);
-  ss.put(0x08);
+  writeBytes(0x80, 4);
+  writeBytes(0x08, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarInt(begin, end);
@@ -132,13 +127,12 @@ TEST(VarInt, ReadMinInt)
   EXPECT_EQ(std::numeric_limits<std::int32_t>::lowest(), value);
 }
 
-TEST(VarInt, ReadValidIterator)
+TEST_F(VarIntTest, ReadsValidIterator)
 {
-  std::stringstream ss;
-  ss.put(0x7f);
-  ss.put(0xff);
+  writeBytes(0x7f, 1);
+  writeBytes(0xff, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarInt(begin, end);
@@ -148,12 +142,11 @@ TEST(VarInt, ReadValidIterator)
   EXPECT_EQ(127, value);
 }
 
-TEST(VarInt, ReadMissing)
+TEST_F(VarIntTest, ReadsMissing)
 {
-  std::stringstream ss;
-  ss.put(0xff);
+  writeBytes(0xff, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarInt(begin, end);
@@ -162,32 +155,33 @@ TEST(VarInt, ReadMissing)
   EXPECT_EQ(end, it);
 }
 
-TEST(VarInt, ReadOverflow)
+TEST_F(VarIntTest, ReadsOverflow)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 5);
-  ss.put(0);
+  writeBytes(0xff, 5);
+  writeBytes(0x00, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   EXPECT_THROW(VarNumber::readVarInt(begin, end), std::overflow_error);
 }
 
-TEST(VarInt, ReadStatic)
+TEST_F(VarIntTest, ReadsStatic)
 {
-  std::stringstream ss;
-  ss.put(1);
+  writeBytes(0x01, 1);
 
-  EXPECT_EQ(1, VarNumber::readVarInt(ss));
+  EXPECT_EQ(1, VarNumber::readVarInt(stream));
 }
 
-TEST(VarLong, ReadZero)
+class VarLongTest : public NetworkTypeTest
 {
-  std::stringstream ss;
-  ss.put(0);
+};
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+TEST_F(VarLongTest, ReadsZero)
+{
+  writeBytes(0x00, 1);
+
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarLong(begin, end);
@@ -197,12 +191,11 @@ TEST(VarLong, ReadZero)
   EXPECT_EQ(0, value);
 }
 
-TEST(VarLong, ReadOneByte)
+TEST_F(VarLongTest, ReadsOneByte)
 {
-  std::stringstream ss;
-  ss.put(0x7f);
+  writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarLong(begin, end);
@@ -212,13 +205,12 @@ TEST(VarLong, ReadOneByte)
   EXPECT_EQ(127, value);
 }
 
-TEST(VarLong, ReadTwoBytes)
+TEST_F(VarLongTest, ReadsTwoBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 1);
-  ss.put(0x7f);
+  writeBytes(0xff, 1);
+  writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarLong(begin, end);
@@ -228,13 +220,12 @@ TEST(VarLong, ReadTwoBytes)
   EXPECT_EQ(16383, value);
 }
 
-TEST(VarLong, ReadThreeBytes)
+TEST_F(VarLongTest, ReadsThreeBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 2);
-  ss.put(0x7f);
+  writeBytes(0xff, 2);
+  writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarLong(begin, end);
@@ -244,13 +235,12 @@ TEST(VarLong, ReadThreeBytes)
   EXPECT_EQ(2097151, value);
 }
 
-TEST(VarLong, ReadFourBytes)
+TEST_F(VarLongTest, ReadsFourBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 3);
-  ss.put(0x7f);
+  writeBytes(0xff, 3);
+  writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarLong(begin, end);
@@ -260,13 +250,12 @@ TEST(VarLong, ReadFourBytes)
   EXPECT_EQ(268435455, value);
 }
 
-TEST(VarLong, ReadFiveBytes)
+TEST_F(VarLongTest, ReadsFiveBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 4);
-  ss.put(0x7f);
+  writeBytes(0xff, 4);
+  writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarLong(begin, end);
@@ -276,13 +265,12 @@ TEST(VarLong, ReadFiveBytes)
   EXPECT_EQ(34359738367, value);
 }
 
-TEST(VarLong, ReadSixBytes)
+TEST_F(VarLongTest, ReadsSixBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 5);
-  ss.put(0x7f);
+  writeBytes(0xff, 5);
+  writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarLong(begin, end);
@@ -292,13 +280,12 @@ TEST(VarLong, ReadSixBytes)
   EXPECT_EQ(4398046511103, value);
 }
 
-TEST(VarLong, ReadSevenBytes)
+TEST_F(VarLongTest, ReadsSevenBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 6);
-  ss.put(0x7f);
+  writeBytes(0xff, 6);
+  writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarLong(begin, end);
@@ -308,13 +295,12 @@ TEST(VarLong, ReadSevenBytes)
   EXPECT_EQ(562949953421311, value);
 }
 
-TEST(VarLong, ReadEightBytes)
+TEST_F(VarLongTest, ReadsEightBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 7);
-  ss.put(0x7f);
+  writeBytes(0xff, 7);
+  writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarLong(begin, end);
@@ -324,13 +310,12 @@ TEST(VarLong, ReadEightBytes)
   EXPECT_EQ(72057594037927935, value);
 }
 
-TEST(VarLong, ReadNineBytes)
+TEST_F(VarLongTest, ReadsNineBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 8);
-  ss.put(0x7f);
+  writeBytes(0xff, 8);
+  writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarLong(begin, end);
@@ -340,13 +325,12 @@ TEST(VarLong, ReadNineBytes)
   EXPECT_EQ(std::numeric_limits<std::int64_t>::max(), value);
 }
 
-TEST(VarLong, ReadTenBytes)
+TEST_F(VarLongTest, ReadsTenBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 9);
-  ss.put(0x01);
+  writeBytes(0xff, 9);
+  writeBytes(0x01, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarLong(begin, end);
@@ -356,13 +340,12 @@ TEST(VarLong, ReadTenBytes)
   EXPECT_EQ(-1, value);
 }
 
-TEST(VarLong, ReadMaxInt)
+TEST_F(VarLongTest, ReadsMaxInt)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 4);
-  ss.put(0x07);
+  writeBytes(0xff, 4);
+  writeBytes(0x07, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarLong(begin, end);
@@ -372,15 +355,14 @@ TEST(VarLong, ReadMaxInt)
   EXPECT_EQ(std::numeric_limits<std::int32_t>::max(), value);
 }
 
-TEST(VarLong, ReadMinInt)
+TEST_F(VarLongTest, ReadsMinInt)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0x80, 4);
-  ss.put(0xf8);
-  NetworkTypeTest::writeBytes(ss, 0xff, 4);
-  ss.put(0x01);
+  writeBytes(0x80, 4);
+  writeBytes(0xf8, 1);
+  writeBytes(0xff, 4);
+  writeBytes(0x01, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarLong(begin, end);
@@ -390,13 +372,12 @@ TEST(VarLong, ReadMinInt)
   EXPECT_EQ(std::numeric_limits<std::int32_t>::lowest(), value);
 }
 
-TEST(VarLong, ReadMinLong)
+TEST_F(VarLongTest, ReadsMinLong)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0x80, 9);
-  ss.put(0x01);
+  writeBytes(0x80, 9);
+  writeBytes(0x01, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarLong(begin, end);
@@ -406,13 +387,12 @@ TEST(VarLong, ReadMinLong)
   EXPECT_EQ(std::numeric_limits<std::int64_t>::lowest(), value);
 }
 
-TEST(VarLong, ReadValidIterator)
+TEST_F(VarLongTest, ReadsValidIterator)
 {
-  std::stringstream ss;
-  ss.put(0x7f);
-  ss.put(0xff);
+  writeBytes(0x7f, 1);
+  writeBytes(0xff, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarLong(begin, end);
@@ -422,12 +402,11 @@ TEST(VarLong, ReadValidIterator)
   EXPECT_EQ(127, value);
 }
 
-TEST(VarLong, ReadMissing)
+TEST_F(VarLongTest, ReadsMissing)
 {
-  std::stringstream ss;
-  ss.put(0xff);
+  writeBytes(0xff, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   auto [valid, it, value] = VarNumber::readVarLong(begin, end);
@@ -436,111 +415,103 @@ TEST(VarLong, ReadMissing)
   EXPECT_EQ(end, it);
 }
 
-TEST(VarLong, ReadOverflow)
+TEST_F(VarLongTest, ReadsOverflow)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 10);
-  ss.put(0);
+  writeBytes(0xff, 10);
+  writeBytes(0x00, 1);
 
-  auto begin = std::istreambuf_iterator<char>(ss);
+  auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
   EXPECT_THROW(VarNumber::readVarLong(begin, end), std::overflow_error);
 }
 
-TEST(VarLong, ReadStatic)
+TEST_F(VarLongTest, ReadsStatic)
 {
-  std::stringstream ss;
-  ss.put(127);
+  writeBytes(0x7f, 1);
 
-  EXPECT_EQ(127, VarNumber::readVarLong(ss));
+  EXPECT_EQ(127, VarNumber::readVarLong(stream));
 }
 
-TEST(WriteVarNumber, WriteZero)
+class WriteVarNumberTest : public NetworkTypeTest
 {
-  std::stringstream ss;
-  VarNumber::writeVarNumber(ss, 0);
+};
 
-  EXPECT_EQ(0, ss.get());
+TEST_F(WriteVarNumberTest, WritesZero)
+{
+  VarNumber::writeVarNumber(stream, 0);
+
+  checkBytes(0x00, 1);
 }
 
-TEST(WriteVarNumber, WriteOneByte)
+TEST_F(WriteVarNumberTest, WritesOneByte)
 {
-  std::stringstream ss;
-  VarNumber::writeVarNumber(ss, 127);
+  VarNumber::writeVarNumber(stream, 127);
 
-  EXPECT_EQ(0x7f, ss.get());
+  checkBytes(0x7f, 1);
 }
 
-TEST(WriteVarNumber, WriteTwoBytes)
+TEST_F(WriteVarNumberTest, WritesTwoBytes)
 {
-  std::stringstream ss;
-  VarNumber::writeVarNumber(ss, 128);
+  VarNumber::writeVarNumber(stream, 128);
 
-  EXPECT_EQ(0x80, ss.get());
-  EXPECT_EQ(0x01, ss.get());
+  checkBytes(0x80, 1);
+  checkBytes(0x01, 1);
 }
 
-TEST(WriteVarNumber, WriteThreeBytes)
+TEST_F(WriteVarNumberTest, WritesThreeBytes)
 {
-  std::stringstream ss;
-  VarNumber::writeVarNumber(ss, 25565);
+  VarNumber::writeVarNumber(stream, 25565);
 
-  EXPECT_EQ(0xdd, ss.get());
-  EXPECT_EQ(0xc7, ss.get());
-  EXPECT_EQ(0x01, ss.get());
+  checkBytes(0xdd, 1);
+  checkBytes(0xc7, 1);
+  checkBytes(0x01, 1);
 }
 
-TEST(WriteVarNumber, WriteFiveBytes)
+TEST_F(WriteVarNumberTest, WritesFiveBytes)
 {
-  std::stringstream ss;
-  VarNumber::writeVarNumber(ss, 2147483647);
+  VarNumber::writeVarNumber(stream, 2147483647);
 
-  NetworkTypeTest::checkBytes(ss, 0xff, 4);
-  EXPECT_EQ(0x07, ss.get());
+  checkBytes(0xff, 4);
+  checkBytes(0x07, 1);
 }
 
-TEST(WriteVarNumber, WriteNineBytes)
+TEST_F(WriteVarNumberTest, WritesNineBytes)
 {
-  std::stringstream ss;
-  VarNumber::writeVarNumber(ss, std::numeric_limits<std::int64_t>::max());
+  VarNumber::writeVarNumber(stream, std::numeric_limits<std::int64_t>::max());
 
-  NetworkTypeTest::checkBytes(ss, 0xff, 8);
-  EXPECT_EQ(0x7f, ss.get());
+  checkBytes(0xff, 8);
+  checkBytes(0x7f, 1);
 }
 
-TEST(WriteVarNumber, WriteNegativeOneInt)
+TEST_F(WriteVarNumberTest, WritesNegativeOneInt)
 {
-  std::stringstream ss;
-  VarNumber::writeVarNumber(ss, static_cast<std::int32_t>(-1));
+  VarNumber::writeVarNumber(stream, static_cast<std::int32_t>(-1));
 
-  NetworkTypeTest::checkBytes(ss, 0xff, 4);
-  EXPECT_EQ(0x0f, ss.get());
+  checkBytes(0xff, 4);
+  checkBytes(0x0f, 1);
 }
 
-TEST(WriteVarNumber, WriteNegativeOneLong)
+TEST_F(WriteVarNumberTest, WritesNegativeOneLong)
 {
-  std::stringstream ss;
-  VarNumber::writeVarNumber(ss, static_cast<std::int64_t>(-1));
+  VarNumber::writeVarNumber(stream, static_cast<std::int64_t>(-1));
 
-  NetworkTypeTest::checkBytes(ss, 0xff, 9);
-  EXPECT_EQ(0x01, ss.get());
+  checkBytes(0xff, 9);
+  checkBytes(0x01, 1);
 }
 
-TEST(WriteVarNumber, WriteMinInt)
+TEST_F(WriteVarNumberTest, WritesMinInt)
 {
-  std::stringstream ss;
-  VarNumber::writeVarNumber(ss, std::numeric_limits<std::int32_t>::min());
+  VarNumber::writeVarNumber(stream, std::numeric_limits<std::int32_t>::min());
 
-  NetworkTypeTest::checkBytes(ss, 0x80, 4);
-  EXPECT_EQ(0x08, ss.get());
+  checkBytes(0x80, 4);
+  checkBytes(0x08, 1);
 }
 
-TEST(WriteVarNumber, WriteMinLong)
+TEST_F(WriteVarNumberTest, WritesMinLong)
 {
-  std::stringstream ss;
-  VarNumber::writeVarNumber(ss, std::numeric_limits<std::int64_t>::min());
+  VarNumber::writeVarNumber(stream, std::numeric_limits<std::int64_t>::min());
 
-  NetworkTypeTest::checkBytes(ss, 0x80, 9);
-  EXPECT_EQ(0x01, ss.get());
+  checkBytes(0x80, 9);
+  checkBytes(0x01, 1);
 }

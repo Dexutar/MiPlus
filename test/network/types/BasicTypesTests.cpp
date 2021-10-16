@@ -4,212 +4,192 @@
 #include <sstream>
 
 #include "BasicTypes.hh"
-#include "NetworkTypeTests.hh"
+#include "NetworkTypeTest.hh"
 
-TEST(BasicTypes, ReadUint16Zero)
+class BasicTypesTest : public NetworkTypeTest
 {
-  std::stringstream ss;
-  ss.put(0);
+};
 
-  EXPECT_EQ(0, BasicTypes::readUint16(ss));
+TEST_F(BasicTypesTest, ReadsUint16Zero)
+{
+  writeBytes(0x00, 1);
+
+  EXPECT_EQ(0, BasicTypes::readUint16(stream));
 }
 
-TEST(BasicTypes, ReadUint16OneByte)
+TEST_F(BasicTypesTest, ReadsUint16OneByte)
 {
-  std::stringstream ss;
-  ss.put(0x00);
-  ss.put(0xff);
+  writeBytes(0x00, 1);
+  writeBytes(0xff, 1);
 
-  EXPECT_EQ(0xff, BasicTypes::readUint16(ss));
+  EXPECT_EQ(0xff, BasicTypes::readUint16(stream));
 }
 
-TEST(BasicTypes, ReadUint16TwoBytes)
+TEST_F(BasicTypesTest, ReadsUint16TwoBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 2);
+  writeBytes(0xff, 2);
 
-  EXPECT_EQ(0xffff, BasicTypes::readUint16(ss));
+  EXPECT_EQ(0xffff, BasicTypes::readUint16(stream));
 }
 
-TEST(BasicTypes, ReadUint64Zero)
+TEST_F(BasicTypesTest, ReadsUint64Zero)
 {
-  std::stringstream ss;
-  ss.put(0);
+  writeBytes(0x00, 1);
 
-  EXPECT_EQ(0, BasicTypes::readUint64(ss));
+  EXPECT_EQ(0, BasicTypes::readUint64(stream));
 }
 
-TEST(BasicTypes, ReadUint64OneByte)
+TEST_F(BasicTypesTest, ReadsUint64OneByte)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0x00, 7);
-  ss.put(0xff);
+  writeBytes(0x00, 7);
+  writeBytes(0xff, 1);
 
-  EXPECT_EQ(0xff, BasicTypes::readUint64(ss));
+  EXPECT_EQ(0xff, BasicTypes::readUint64(stream));
 }
 
-TEST(BasicTypes, ReadUint64TwoBytes)
+TEST_F(BasicTypesTest, ReadsUint64TwoBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0x00, 6);
-  NetworkTypeTest::writeBytes(ss, 0xff, 2);
+  writeBytes(0x00, 6);
+  writeBytes(0xff, 2);
 
-  EXPECT_EQ(0xffff, BasicTypes::readUint64(ss));
+  EXPECT_EQ(0xffff, BasicTypes::readUint64(stream));
 }
 
-TEST(BasicTypes, ReadUint64ThreeBytes)
+TEST_F(BasicTypesTest, ReadsUint64ThreeBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0x00, 5);
-  NetworkTypeTest::writeBytes(ss, 0xff, 3);
+  writeBytes(0x00, 5);
+  writeBytes(0xff, 3);
 
-  EXPECT_EQ(0xffffff, BasicTypes::readUint64(ss));
+  EXPECT_EQ(0xffffff, BasicTypes::readUint64(stream));
 }
 
-TEST(BasicTypes, ReadUint64FourBytes)
+TEST_F(BasicTypesTest, ReadsUint64FourBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0x00, 4);
-  NetworkTypeTest::writeBytes(ss, 0xff, 4);
+  writeBytes(0x00, 4);
+  writeBytes(0xff, 4);
 
-  EXPECT_EQ(0xffffffff, BasicTypes::readUint64(ss));
+  EXPECT_EQ(0xffffffff, BasicTypes::readUint64(stream));
 }
 
-TEST(BasicTypes, ReadUint64FiveBytes)
+TEST_F(BasicTypesTest, ReadsUint64FiveBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0x00, 3);
-  NetworkTypeTest::writeBytes(ss, 0xff, 5);
+  writeBytes(0x00, 3);
+  writeBytes(0xff, 5);
 
-  EXPECT_EQ(0xffffffffff, BasicTypes::readUint64(ss));
+  EXPECT_EQ(0xffffffffff, BasicTypes::readUint64(stream));
 }
 
-TEST(BasicTypes, ReadUint64SixBytes)
+TEST_F(BasicTypesTest, ReadsUint64SixBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0x00, 2);
-  NetworkTypeTest::writeBytes(ss, 0xff, 6);
+  writeBytes(0x00, 2);
+  writeBytes(0xff, 6);
 
-  EXPECT_EQ(0xffffffffffff, BasicTypes::readUint64(ss));
+  EXPECT_EQ(0xffffffffffff, BasicTypes::readUint64(stream));
 }
 
-TEST(BasicTypes, ReadUint64SevenBytes)
+TEST_F(BasicTypesTest, ReadsUint64SevenBytes)
 {
-  std::stringstream ss;
-  ss.put(0x00);
-  NetworkTypeTest::writeBytes(ss, 0xff, 7);
+  writeBytes(0x00, 1);
+  writeBytes(0xff, 7);
 
-  EXPECT_EQ(0xffffffffffffff, BasicTypes::readUint64(ss));
+  EXPECT_EQ(0xffffffffffffff, BasicTypes::readUint64(stream));
 }
 
-TEST(BasicTypes, ReadUint64EightBytes)
+TEST_F(BasicTypesTest, ReadsUint64EightBytes)
 {
-  std::stringstream ss;
-  NetworkTypeTest::writeBytes(ss, 0xff, 8);
+  writeBytes(0xff, 8);
 
-  EXPECT_EQ(0xffffffffffffffff, BasicTypes::readUint64(ss));
+  EXPECT_EQ(0xffffffffffffffff, BasicTypes::readUint64(stream));
 }
 
-TEST(BasicTypes, WriteUint16Zero)
+TEST_F(BasicTypesTest, WritesUint16Zero)
 {
-  std::stringstream ss;
-  BasicTypes::writeUint16(ss, 0);
+  BasicTypes::writeUint16(stream, 0);
 
-  EXPECT_EQ(0, ss.get());
+  checkBytes(0x00, 1);
 }
 
-TEST(BasicTypes, WriteUint16OneByte)
+TEST_F(BasicTypesTest, WritesUint16OneByte)
 {
-  std::stringstream ss;
-  BasicTypes::writeUint16(ss, 0xff);
+  BasicTypes::writeUint16(stream, 0xff);
 
-  NetworkTypeTest::checkBytes(ss, 0x00, 1);
-  NetworkTypeTest::checkBytes(ss, 0xff, 1);
+  checkBytes(0x00, 1);
+  checkBytes(0xff, 1);
 }
 
-TEST(BasicTypes, WriteUint16TwoBytes)
+TEST_F(BasicTypesTest, WritesUint16TwoBytes)
 {
-  std::stringstream ss;
-  BasicTypes::writeUint16(ss, 0xffff);
+  BasicTypes::writeUint16(stream, 0xffff);
 
-  NetworkTypeTest::checkBytes(ss, 0xff, 2);
+  checkBytes(0xff, 2);
 }
 
-TEST(BasicTypes, WriteUint64Zero)
+TEST_F(BasicTypesTest, WritesUint64Zero)
 {
-  std::stringstream ss;
-  BasicTypes::writeUint64(ss, 0);
+  BasicTypes::writeUint64(stream, 0);
 
-  EXPECT_EQ(0, ss.get());
+  checkBytes(0x00, 1);
 }
 
-TEST(BasicTypes, WriteUint64OneByte)
+TEST_F(BasicTypesTest, WritesUint64OneByte)
 {
-  std::stringstream ss;
-  BasicTypes::writeUint64(ss, 0xff);
+  BasicTypes::writeUint64(stream, 0xff);
 
-  NetworkTypeTest::checkBytes(ss, 0x00, 7);
-  NetworkTypeTest::checkBytes(ss, 0xff, 1);
+  checkBytes(0x00, 7);
+  checkBytes(0xff, 1);
 }
 
-TEST(BasicTypes, WriteUint64TwoBytes)
+TEST_F(BasicTypesTest, WritesUint64TwoBytes)
 {
-  std::stringstream ss;
-  BasicTypes::writeUint64(ss, 0xffff);
+  BasicTypes::writeUint64(stream, 0xffff);
 
-  NetworkTypeTest::checkBytes(ss, 0x00, 6);
-  NetworkTypeTest::checkBytes(ss, 0xff, 2);
+  checkBytes(0x00, 6);
+  checkBytes(0xff, 2);
 }
 
-TEST(BasicTypes, WriteUint64ThreeBytes)
+TEST_F(BasicTypesTest, WritesUint64ThreeBytes)
 {
-  std::stringstream ss;
-  BasicTypes::writeUint64(ss, 0xffffff);
+  BasicTypes::writeUint64(stream, 0xffffff);
 
-  NetworkTypeTest::checkBytes(ss, 0x00, 5);
-  NetworkTypeTest::checkBytes(ss, 0xff, 3);
+  checkBytes(0x00, 5);
+  checkBytes(0xff, 3);
 }
 
-TEST(BasicTypes, WriteUint64FourBytes)
+TEST_F(BasicTypesTest, WritesUint64FourBytes)
 {
-  std::stringstream ss;
-  BasicTypes::writeUint64(ss, 0xffffffff);
+  BasicTypes::writeUint64(stream, 0xffffffff);
 
-  NetworkTypeTest::checkBytes(ss, 0x00, 4);
-  NetworkTypeTest::checkBytes(ss, 0xff, 4);
+  checkBytes(0x00, 4);
+  checkBytes(0xff, 4);
 }
 
-TEST(BasicTypes, WriteUint64FiveBytes)
+TEST_F(BasicTypesTest, WritesUint64FiveBytes)
 {
-  std::stringstream ss;
-  BasicTypes::writeUint64(ss, 0xffffffffff);
+  BasicTypes::writeUint64(stream, 0xffffffffff);
 
-  NetworkTypeTest::checkBytes(ss, 0x00, 3);
-  NetworkTypeTest::checkBytes(ss, 0xff, 5);
+  checkBytes(0x00, 3);
+  checkBytes(0xff, 5);
 }
 
-TEST(BasicTypes, WriteUint64SixBytes)
+TEST_F(BasicTypesTest, WritesUint64SixBytes)
 {
-  std::stringstream ss;
-  BasicTypes::writeUint64(ss, 0xffffffffffff);
+  BasicTypes::writeUint64(stream, 0xffffffffffff);
 
-  NetworkTypeTest::checkBytes(ss, 0x00, 2);
-  NetworkTypeTest::checkBytes(ss, 0xff, 6);
+  checkBytes(0x00, 2);
+  checkBytes(0xff, 6);
 }
 
-TEST(BasicTypes, WriteUint64SevenBytes)
+TEST_F(BasicTypesTest, WritesUint64SevenBytes)
 {
-  std::stringstream ss;
-  BasicTypes::writeUint64(ss, 0xffffffffffffff);
+  BasicTypes::writeUint64(stream, 0xffffffffffffff);
 
-  NetworkTypeTest::checkBytes(ss, 0x00, 1);
-  NetworkTypeTest::checkBytes(ss, 0xff, 7);
+  checkBytes(0x00, 1);
+  checkBytes(0xff, 7);
 }
 
-TEST(BasicTypes, WriteUint64EightBytes)
+TEST_F(BasicTypesTest, WritesUint64EightBytes)
 {
-  std::stringstream ss;
-  BasicTypes::writeUint64(ss, 0xffffffffffffffff);
+  BasicTypes::writeUint64(stream, 0xffffffffffffffff);
 
-  NetworkTypeTest::checkBytes(ss, 0xff, 8);
+  checkBytes(0xff, 8);
 }
