@@ -4,3 +4,4 @@ BreakBeforeBraces: Allman
 NamespaceIndentation: All
 BraceWrapping:
   BeforeLambdaBody: false
+LambdaBodyIndentation: OuterScope
