@@ -39,7 +39,7 @@ TEST_F(VarStringTest, ReadsString)
   EXPECT_EQ(TEST_STRING, VarString::readVarString<VarNumberMockProxy<std::size_t>>(stream));
 }
 
-TEST_F(VarStringTest, WritesEmpty)
+TEST_F(VarStringTest, WritesEmptyString)
 {
   VarNumberMock<std::size_t> mock;
   VarNumberMockProxy<std::size_t>::mock = &mock;
