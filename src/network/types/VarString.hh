@@ -1,8 +1,25 @@
 #pragma once
 
 #include <string>
+#include <concepts>
 
 #include "VarNumber.hh"
+
+template <typename T>
+concept VarStringReader = requires (std::istream &is)
+{
+  {
+    T::readVarString(is)
+  } -> std::same_as<std::string>;
+};
+
+template <typename T>
+concept VarStringWriter = requires (std::ostream &os, std::string_view string)
+{
+  {
+    T::writeVarString(os, string)
+  } -> std::same_as<void>;
+};
 
 class VarString
 {
