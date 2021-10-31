@@ -4,7 +4,7 @@
 
 std::istream &operator>>(std::istream &is, PingPacket &packet)
 {
-  packet.payload = BasicTypes::readUint64(is);
+  packet.payload = BasicTypes::read<std::uint64_t>(is);
   return is;
 }
 
@@ -16,7 +16,7 @@ std::ostream &PingPacket::write(std::ostream &os) const
   std::ostream data{&sb};
 
   VarNumber::writeVarNumber(data, PingPacket::opcode);
-  BasicTypes::writeUint64(data, payload);
+  BasicTypes::write(data, payload);
 
   return write_header(os, data);
 }

@@ -25,7 +25,6 @@ SET(NETWORK_SOURCES base/EventLoop.cpp
                     session/Session.cpp
                     session/SessionRegistry.cpp
                     types/VarNumber.cpp
-                    types/BasicTypes.cpp    
                     ConnectionManager.cpp
                     ) 
 

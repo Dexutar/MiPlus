@@ -8,7 +8,7 @@ std::ostream& PongPacket::write(std::ostream& os) const
   std::ostream data{&sb};
 
   VarNumber::writeVarNumber(data, PongPacket::opcode);
-  BasicTypes::writeUint64(data, payload);
+  BasicTypes::write(data, payload);
 
   return write_header(os, data);
 }
