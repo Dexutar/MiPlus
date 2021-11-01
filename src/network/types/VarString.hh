@@ -1,24 +1,24 @@
 #pragma once
 
-#include <string>
 #include <concepts>
+#include <string>
 
 #include "VarNumber.hh"
 
 template <typename T>
-concept VarStringReader = requires (std::istream &is)
+concept VarStringReader = requires(std::istream &is)
 {
   {
     T::readVarString(is)
-  } -> std::same_as<std::string>;
+    } -> std::same_as<std::string>;
 };
 
 template <typename T>
-concept VarStringWriter = requires (std::ostream &os, std::string_view string)
+concept VarStringWriter = requires(std::ostream &os, std::string_view string)
 {
   {
     T::writeVarString(os, string)
-  } -> std::same_as<void>;
+    } -> std::same_as<void>;
 };
 
 class VarString
@@ -30,7 +30,6 @@ class VarString
   template <VarNumberWriter<std::size_t> VN = VarNumber>
   static void writeVarString(std::ostream &os, std::string_view string);
 };
-
 
 template <VarNumberReader VN>
 std::string VarString::readVarString(std::istream &is)

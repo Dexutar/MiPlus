@@ -52,7 +52,6 @@ class VarNumber
   static void writeVarNumber(std::ostream &os, number value);
 };
 
-
 template <std::input_iterator iterator>
 std::tuple<bool, iterator, std::int32_t> VarNumber::readVarInt(iterator begin, iterator end)
 {
