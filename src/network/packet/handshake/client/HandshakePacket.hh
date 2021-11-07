@@ -14,7 +14,7 @@ class HandshakePacket : Packet
   static constexpr std::uint8_t opcode = 0;
 
   template <VarNumberReader VN = VarNumber, VarStringReader VS = VarString,
-            BasicTypesReader BR = BasicTypes>
+            BasicTypesReader<std::uint16_t> BR = BasicTypes>
   friend std::istream &operator>>(std::istream &is, HandshakePacket &packet)
   {
     packet.version = VN::readVarInt(is);

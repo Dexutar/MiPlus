@@ -6,15 +6,17 @@
 #include <limits>
 #include <ostream>
 
-template <typename T>
-concept BasicTypesReader = requires(std::istream &is)
+template <typename T, typename number>
+concept BasicTypesReader =
+    std::integral<number> and
+    (std::numeric_limits<number>::digits + std::numeric_limits<number>::is_signed == 16 or
+     std::numeric_limits<number>::digits + std::numeric_limits<number>::is_signed == 32 or
+     std::numeric_limits<number>::digits + std::numeric_limits<number>::is_signed == 64) and
+    requires(std::istream &is)
 {
   {
-    T::template read<std::uint16_t>(is)
-    } -> std::same_as<std::uint16_t>;
-  {
-    T::template read<std::uint64_t>(is)
-    } -> std::same_as<std::uint64_t>;
+    T::template read<number>(is)
+    } -> std::same_as<number>;
 };
 
 template <typename T, typename number>
