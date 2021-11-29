@@ -12,7 +12,7 @@ std::ostream &HandshakePacket::write(std::ostream &os) const
 
   VarNumber::write(data, HandshakePacket::opcode);
   VarNumber::write(data, version);
-  VarString::writeVarString(data, server_address);
+  VarString::write(data, server_address);
   BasicTypes::write(data, server_port);
   VarNumber::write(data, static_cast<std::int8_t>(requested_state));
 

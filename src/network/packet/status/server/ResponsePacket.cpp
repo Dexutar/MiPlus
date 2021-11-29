@@ -10,7 +10,7 @@ std::ostream& ResponsePacket::write(std::ostream& os) const
   std::ostream data{&sb};
 
   VarNumber::write(data, ResponsePacket::opcode);
-  VarString::writeVarString(data, response);
+  VarString::write(data, response);
 
   return write_header(os, data);
 }

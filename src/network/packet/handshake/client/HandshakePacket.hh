@@ -16,7 +16,7 @@ class HandshakePacket : Packet
   friend std::istream &operator>>(std::istream &is, HandshakePacket &packet)
   {
     packet.version = VarNumber::read<std::int32_t>(is);
-    packet.server_address = VarString::readVarString(is);
+    packet.server_address = VarString::read<std::string>(is);
     packet.server_port = BasicTypes::read<std::uint16_t>(is);
     packet.requested_state = static_cast<ConnectionState>(VarNumber::read<std::int32_t>(is));
     return is;
