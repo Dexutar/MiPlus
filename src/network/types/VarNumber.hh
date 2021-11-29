@@ -5,37 +5,6 @@
 #include <iostream>
 #include <optional>
 
-template <typename T, typename iterator>
-concept VarNumberIteratorReader = std::input_iterator<iterator> and
-    requires(iterator begin, iterator end)
-{
-  {
-    T::readVarInt(begin, end)
-    } -> std::same_as<std::tuple<bool, iterator, std::int32_t>>;
-  {
-    T::readVarLong(begin, end)
-    } -> std::same_as<std::tuple<bool, iterator, std::int64_t>>;
-};
-
-template <typename T>
-concept VarNumberReader = requires(std::istream &is)
-{
-  {
-    T::readVarInt(is)
-    } -> std::same_as<std::int32_t>;
-  {
-    T::readVarLong(is)
-    } -> std::same_as<std::int64_t>;
-};
-
-template <typename T, typename number>
-concept VarNumberWriter = std::integral<number> and requires(number value, std::ostream &os)
-{
-  {
-    T::writeVarNumber(os, value)
-    } -> std::same_as<void>;
-};
-
 class VarNumber
 {
  public:

@@ -13,13 +13,13 @@ class HandshakePacket : Packet
  public:
   static constexpr std::uint8_t opcode = 0;
 
-  template <VarNumberReader VN = VarNumber, VarStringReader VS = VarString>
+  template <VarStringReader VS = VarString>
   friend std::istream &operator>>(std::istream &is, HandshakePacket &packet)
   {
-    packet.version = VN::readVarInt(is);
+    packet.version = VarNumber::readVarInt(is);
     packet.server_address = VS::readVarString(is);
     packet.server_port = BasicTypes::read<std::uint16_t>(is);
-    packet.requested_state = static_cast<ConnectionState>(VN::readVarInt(is));
+    packet.requested_state = static_cast<ConnectionState>(VarNumber::readVarInt(is));
     return is;
   }
 

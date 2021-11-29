@@ -24,14 +24,14 @@ concept VarStringWriter = requires(std::ostream &os, std::string_view string)
 class VarString
 {
  public:
-  template <VarNumberReader VN = VarNumber>
+  template <typename VN = VarNumber>
   static std::string readVarString(std::istream &is);
 
-  template <VarNumberWriter<std::size_t> VN = VarNumber>
+  template <typename VN = VarNumber>
   static void writeVarString(std::ostream &os, std::string_view string);
 };
 
-template <VarNumberReader VN>
+template <typename VN>
 std::string VarString::readVarString(std::istream &is)
 {
   std::string res;
@@ -40,7 +40,7 @@ std::string VarString::readVarString(std::istream &is)
   return res;
 }
 
-template <VarNumberWriter<std::size_t> VN>
+template <typename VN>
 void VarString::writeVarString(std::ostream &os, std::string_view string)
 {
   VN::writeVarNumber(os, string.size());
