@@ -1,5 +1,7 @@
 #include "PingPacket.hh"
 
+#include <sstream>
+
 #include "BasicTypes.hh"
 
 std::istream &operator>>(std::istream &is, PingPacket &packet)

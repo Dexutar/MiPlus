@@ -1,5 +1,7 @@
 #include "PongPacket.hh"
 
+#include <sstream>
+
 #include "BasicTypes.hh"
 
 std::ostream& PongPacket::write(std::ostream& os) const
