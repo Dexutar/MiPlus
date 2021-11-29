@@ -10,11 +10,11 @@ std::ostream &HandshakePacket::write(std::ostream &os) const
   std::stringbuf sb;
   std::ostream data{&sb};
 
-  VarNumber::writeVarNumber(data, HandshakePacket::opcode);
-  VarNumber::writeVarNumber(data, version);
+  VarNumber::write(data, HandshakePacket::opcode);
+  VarNumber::write(data, version);
   VarString::writeVarString(data, server_address);
   BasicTypes::write(data, server_port);
-  VarNumber::writeVarNumber(data, static_cast<std::int8_t>(requested_state));
+  VarNumber::write(data, static_cast<std::int8_t>(requested_state));
 
   return write_header(os, data);
 }

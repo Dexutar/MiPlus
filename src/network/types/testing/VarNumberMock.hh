@@ -8,19 +8,18 @@ template <std::integral number>
 class VarNumberMock
 {
  public:
-  MOCK_METHOD(std::int32_t, readVarInt, (std::istream & is));
-  MOCK_METHOD(std::int64_t, readVarLong, (std::istream & is));
+  MOCK_METHOD(number, read, (std::istream & is));
 
-  MOCK_METHOD(void, writeVarNumber, (std::ostream & os, number value));
+  MOCK_METHOD(void, write, (std::ostream & os, number value));
 };
 
 template <std::integral number>
 struct VarNumberMockProxy
 {
-  inline static VarNumberMock<std::size_t> *mock;
+  inline static VarNumberMock<number> *mock;
 
-  static std::int32_t readVarInt(std::istream &is) { return mock->readVarInt(is); }
-  static std::int64_t readVarLong(std::istream &is) { return mock->readVarLong(is); }
+  template <std::integral>
+  static number read(std::istream &is) { return mock->read(is); }
 
-  static void writeVarNumber(std::ostream &os, number value) { mock->writeVarNumber(os, value); }
+  static void write(std::ostream &os, number value) { mock->write(os, value); }
 };

@@ -22,7 +22,7 @@ TEST_F(VarStringTest, ReadsEmptyString)
   VarNumberMock<std::size_t> mock;
   VarNumberMockProxy<std::size_t>::mock = &mock;
 
-  EXPECT_CALL(mock, readVarInt(_)).WillOnce(Return(0));
+  EXPECT_CALL(mock, read(_)).WillOnce(Return(0));
 
   EXPECT_EQ("", VarString::readVarString<VarNumberMockProxy<std::size_t>>(stream));
 }
@@ -32,7 +32,7 @@ TEST_F(VarStringTest, ReadsString)
   VarNumberMock<std::size_t> mock;
   VarNumberMockProxy<std::size_t>::mock = &mock;
 
-  EXPECT_CALL(mock, readVarInt(_)).WillOnce(Return(TEST_STRING.size()));
+  EXPECT_CALL(mock, read(_)).WillOnce(Return(TEST_STRING.size()));
 
   stream << TEST_STRING;
 
@@ -44,7 +44,7 @@ TEST_F(VarStringTest, WritesEmptyString)
   VarNumberMock<std::size_t> mock;
   VarNumberMockProxy<std::size_t>::mock = &mock;
 
-  EXPECT_CALL(mock, writeVarNumber(_, 0));
+  EXPECT_CALL(mock, write(_, 0));
 
   VarString::writeVarString<VarNumberMockProxy<std::size_t>>(stream, "");
 
@@ -59,7 +59,7 @@ TEST_F(VarStringTest, WritesString)
   VarNumberMock<std::size_t> mock;
   VarNumberMockProxy<std::size_t>::mock = &mock;
 
-  EXPECT_CALL(mock, writeVarNumber(_, TEST_STRING.size()));
+  EXPECT_CALL(mock, write(_, TEST_STRING.size()));
 
   VarString::writeVarString<VarNumberMockProxy<std::size_t>>(stream, TEST_STRING);
 

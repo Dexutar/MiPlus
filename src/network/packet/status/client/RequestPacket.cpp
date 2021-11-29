@@ -9,7 +9,7 @@ std::ostream& RequestPacket::write(std::ostream& os) const
   std::stringbuf sb;
   std::ostream data{&sb};
 
-  VarNumber::writeVarNumber(data, RequestPacket::opcode);
+  VarNumber::write(data, RequestPacket::opcode);
 
   return write_header(os, data);
 }

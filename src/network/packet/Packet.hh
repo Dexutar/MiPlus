@@ -17,7 +17,7 @@ class Packet
  protected:
   std::ostream &write_header(std::ostream &os, std::ostream &data) const
   {
-    VarNumber::writeVarNumber(os, static_cast<std::streamsize>(data.tellp()));
+    VarNumber::write(os, static_cast<std::streamsize>(data.tellp()));
     return os << data.rdbuf();
   }
 

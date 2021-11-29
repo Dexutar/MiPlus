@@ -151,7 +151,7 @@ void Channel::check_timeout()
 std::pair<Channel::MatchCondition::iterator, bool> Channel::MatchCondition::operator()(
     iterator begin, iterator end)
 {
-  auto [valid, it, value] = VarNumber::readVarInt(begin, end);
+  auto [valid, it, value] = VarNumber::read<iterator, std::int32_t>(begin, end);
   packet_length = value;
   return {it, valid};
 }

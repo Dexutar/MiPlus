@@ -35,7 +35,7 @@ template <typename VN>
 std::string VarString::readVarString(std::istream &is)
 {
   std::string res;
-  int size = VN::readVarInt(is);
+  int size = VN::template read<std::int32_t>(is);
   std::copy_n(std::istream_iterator<char>(is), size, std::back_inserter(res));
   return res;
 }
@@ -43,6 +43,6 @@ std::string VarString::readVarString(std::istream &is)
 template <typename VN>
 void VarString::writeVarString(std::ostream &os, std::string_view string)
 {
-  VN::writeVarNumber(os, string.size());
+  VN::write(os, string.size());
   os << string;
 }

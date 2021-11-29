@@ -7,21 +7,34 @@
 class VarNumber
 {
  public:
-  template <std::input_iterator iterator>
-  static std::tuple<bool, iterator, std::int32_t> readVarInt(iterator begin, iterator end);
-
-  template <std::input_iterator iterator>
-  static std::tuple<bool, iterator, std::int64_t> readVarLong(iterator begin, iterator end);
-
-  static std::int32_t readVarInt(std::istream &is);
-  static std::int64_t readVarLong(std::istream &is);
+  template <std::input_iterator iterator, std::integral number>
+  static std::tuple<bool, iterator, number> read(iterator begin, iterator end);
 
   template <std::integral number>
-  static void writeVarNumber(std::ostream &os, number value);
+  static number read(std::istream &is);
+
+  template <std::integral number>
+  static void write(std::ostream &os, number value);
+
+ private:
+  template <std::integral number>
+  struct token {};
+
+  template <std::input_iterator iterator>
+  static std::tuple<bool, iterator, std::int32_t> read(iterator begin, iterator end, token<std::int32_t> t);
+
+  template <std::input_iterator iterator>
+  static std::tuple<bool, iterator, std::int64_t> read(iterator begin, iterator end, token<std::int64_t> t);
 };
 
+template <std::input_iterator iterator, std::integral number>
+std::tuple<bool, iterator, number> VarNumber::read(iterator begin, iterator end)
+{
+  return read(begin,end,token<number>{});
+}
+
 template <std::input_iterator iterator>
-std::tuple<bool, iterator, std::int32_t> VarNumber::readVarInt(iterator begin, iterator end)
+std::tuple<bool, iterator, std::int32_t> VarNumber::read(iterator begin, iterator end, token<std::int32_t> t)
 {
   std::int32_t result = 0;
   std::uint8_t indx = 0;
@@ -49,7 +62,7 @@ std::tuple<bool, iterator, std::int32_t> VarNumber::readVarInt(iterator begin, i
 }
 
 template <std::input_iterator iterator>
-std::tuple<bool, iterator, std::int64_t> VarNumber::readVarLong(iterator begin, iterator end)
+std::tuple<bool, iterator, std::int64_t> VarNumber::read(iterator begin, iterator end, token<std::int64_t> t)
 {
   std::int64_t result = 0;
   std::uint8_t indx = 0;
@@ -76,8 +89,9 @@ std::tuple<bool, iterator, std::int64_t> VarNumber::readVarLong(iterator begin, 
   return {true, it, result};
 }
 
+
 template <std::integral number>
-void VarNumber::writeVarNumber(std::ostream &os, number value)
+void VarNumber::write(std::ostream &os, number value)
 {
   constexpr number mask = static_cast<number>(-1) ^ 0x7f;
 

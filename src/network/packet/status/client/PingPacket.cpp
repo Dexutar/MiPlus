@@ -17,7 +17,7 @@ std::ostream &PingPacket::write(std::ostream &os) const
   std::stringbuf sb;
   std::ostream data{&sb};
 
-  VarNumber::writeVarNumber(data, PingPacket::opcode);
+  VarNumber::write(data, PingPacket::opcode);
   BasicTypes::write(data, payload);
 
   return write_header(os, data);
