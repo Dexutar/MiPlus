@@ -6,7 +6,6 @@
 #include <memory>
 #include <string>
 
-#include "Packet.hh"
 #include "Protocol.hh"
 
 class Channel : public std::enable_shared_from_this<Channel>
@@ -17,8 +16,7 @@ class Channel : public std::enable_shared_from_this<Channel>
     using iterator = boost::asio::buffers_iterator<boost::asio::streambuf::const_buffers_type>;
 
     MatchCondition(std::size_t &packet_length) : packet_length{packet_length} {}
-    MatchCondition(const MatchCondition &match_condtion)
-        : packet_length{match_condtion.packet_length}
+    MatchCondition(const MatchCondition &match_condtion) : packet_length{match_condtion.packet_length}
     {
     }
 
@@ -27,8 +25,7 @@ class Channel : public std::enable_shared_from_this<Channel>
     std::size_t &packet_length;
   };
 
-  Channel(boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context,
-          std::unique_ptr<Protocol> &&protocol);
+  Channel(boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, std::unique_ptr<Protocol> &&protocol);
 
   void start();
 
@@ -36,6 +33,7 @@ class Channel : public std::enable_shared_from_this<Channel>
 
   void setProtocol(std::unique_ptr<Protocol> &&protocol);
 
+  template<typename Packet>
   void send(const Packet &packet);
 
   void close();
@@ -63,6 +61,27 @@ class Channel : public std::enable_shared_from_this<Channel>
 
   std::size_t packet_length;
 };
+
+template<typename Packet>
+void Channel::send(const Packet &packet)
+{
+  namespace io = boost::asio;
+
+  if (active)
+  {
+    std::ostream os(&out_buffer);
+    os << packet;
+
+    io::async_write(socket, out_buffer, io::bind_executor(write_strand, [&, self = shared_from_this()](const auto &error, std::size_t bytes_transferred)
+    {
+      if (active and error)
+      {
+        std::cerr << "Send packet failed: " << error.message() << std::endl;
+        protocol->on_error(error);
+      }
+    }));
+  }
+}
 
 namespace boost::asio
 {

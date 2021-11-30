@@ -19,7 +19,8 @@ class Session
 
   void setState(ConnectionState state);
 
-  void send(const Packet &message);
+  template<typename Packet>
+  void send(const Packet &packet);
 
   void terminate();
 
@@ -27,3 +28,9 @@ class Session
   std::shared_ptr<Channel> channel;
   SessionRegistry &session_registry;
 };
+
+template<typename Packet>
+void Session::send(const Packet &packet)
+{
+  channel->send(packet);
+}

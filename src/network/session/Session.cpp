@@ -6,12 +6,11 @@
 namespace io = boost::asio;
 using tcp = io::ip::tcp;
 
-Session::Session(tcp::socket &&socket, io::io_context &io_context,
-                 SessionRegistry &session_registry)
-    : channel{std::make_shared<Channel>(
-          std::move(socket), io_context,
-          std::move(ProtocolFactory::create(ConnectionState::Handshake, *this)))},
-      session_registry{session_registry}
+Session::Session(tcp::socket &&socket, io::io_context &io_context, SessionRegistry &session_registry)
+  : channel{std::make_shared<Channel>(
+        std::move(socket), io_context,
+        std::move(ProtocolFactory::create(ConnectionState::Handshake, *this)))},
+    session_registry{session_registry}
 {
   channel->start();
 }
@@ -22,8 +21,6 @@ void Session::setState(ConnectionState state)
 {
   channel->setProtocol(std::move(ProtocolFactory::create(state, *this)));
 }
-
-void Session::send(const Packet &packet) { channel->send(packet); }
 
 void Session::terminate()
 {
