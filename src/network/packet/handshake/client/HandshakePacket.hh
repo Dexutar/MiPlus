@@ -25,20 +25,6 @@ class HandshakePacket : Packet
     return is;
   }
 
-  friend std::ostream &operator<<(std::ostream &os, const HandshakePacket &packet)
-  {
-    std::stringbuf sb;
-    std::ostream data{&sb};
-
-    VarNumber::write(data, HandshakePacket::opcode);
-    VarNumber::write(data, packet.version);
-    VarString::write(data, packet.server_address);
-    BasicTypes::write(data, packet.server_port);
-    VarNumber::write(data, static_cast<std::int8_t>(packet.requested_state));
-
-    return packet.write_header(os, data);
-  }
-
   ConnectionState getRequestedState() const;
 
  private:

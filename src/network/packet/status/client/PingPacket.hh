@@ -17,17 +17,6 @@ class PingPacket : public Packet
     return is;
   }
 
-  friend std::ostream &operator<<(std::ostream &os, const PingPacket &packet)
-  {
-    std::stringbuf sb;
-    std::ostream data{&sb};
-
-    VarNumber::write(data, PingPacket::opcode);
-    BasicTypes::write(data, packet.payload);
-
-    return packet.write_header(os, data);
-  }
-
   std::int64_t getPayload() const;
 
  private:
