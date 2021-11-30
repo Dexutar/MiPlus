@@ -19,34 +19,34 @@ class VarStringTest : public NetworkTypeTest
 
 TEST_F(VarStringTest, ReadsEmptyString)
 {
-  VarNumberMock<std::size_t> mock;
-  VarNumberMockProxy<std::size_t>::mock = &mock;
+  VarNumberMock<std::int32_t> mock;
+  VarNumberMockProxy<std::int32_t>::mock = &mock;
 
   EXPECT_CALL(mock, read(_)).WillOnce(Return(0));
 
-  EXPECT_EQ("", ([&]{return VarString::read<std::string, VarNumberMockProxy<std::size_t>>(stream);}()));
+  EXPECT_EQ("", ([&]{return VarString::read<std::string, VarNumberMockProxy<std::int32_t>>(stream);}()));
 }
 
 TEST_F(VarStringTest, ReadsString)
 {
-  VarNumberMock<std::size_t> mock;
-  VarNumberMockProxy<std::size_t>::mock = &mock;
+  VarNumberMock<std::int32_t> mock;
+  VarNumberMockProxy<std::int32_t>::mock = &mock;
 
   EXPECT_CALL(mock, read(_)).WillOnce(Return(TEST_STRING.size()));
 
   stream << TEST_STRING;
 
-  EXPECT_EQ(TEST_STRING, ([&]{return VarString::read<std::string, VarNumberMockProxy<std::size_t>>(stream);}()));
+  EXPECT_EQ(TEST_STRING, ([&]{return VarString::read<std::string, VarNumberMockProxy<std::int32_t>>(stream);}()));
 }
 
 TEST_F(VarStringTest, WritesEmptyString)
 {
-  VarNumberMock<std::size_t> mock;
-  VarNumberMockProxy<std::size_t>::mock = &mock;
+  VarNumberMock<std::int32_t> mock;
+  VarNumberMockProxy<std::int32_t>::mock = &mock;
 
   EXPECT_CALL(mock, write(_, 0));
 
-  VarString::write<VarNumberMockProxy<std::size_t>>(stream, "");
+  VarString::write<VarNumberMockProxy<std::int32_t>>(stream, "");
 
   std::string actual;
   stream >> actual;
@@ -56,12 +56,12 @@ TEST_F(VarStringTest, WritesEmptyString)
 
 TEST_F(VarStringTest, WritesString)
 {
-  VarNumberMock<std::size_t> mock;
-  VarNumberMockProxy<std::size_t>::mock = &mock;
+  VarNumberMock<std::int32_t> mock;
+  VarNumberMockProxy<std::int32_t>::mock = &mock;
 
   EXPECT_CALL(mock, write(_, TEST_STRING.size()));
 
-  VarString::write<VarNumberMockProxy<std::size_t>>(stream, TEST_STRING);
+  VarString::write<VarNumberMockProxy<std::int32_t>>(stream, TEST_STRING);
 
   std::string actual;
   stream >> actual;
