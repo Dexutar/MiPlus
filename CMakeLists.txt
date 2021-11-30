@@ -11,6 +11,8 @@ find_package (GTest REQUIRED)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+add_compile_options(-fconcepts-diagnostics-depth=2)
+
 option(ENABLE_COVERAGE "Enable coverage" OFF)
 
 if (ENABLE_COVERAGE)
