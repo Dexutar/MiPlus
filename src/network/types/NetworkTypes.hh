@@ -1,0 +1,28 @@
+#pragma once
+
+#include <concepts>
+#include <iterator>
+
+template<typename T, typename Value>
+concept NetworkTypeReader = requires(std::istream &is)
+{
+  {
+    T::template read<Value>(is)
+  } -> std::same_as<Value>;
+};
+
+template<typename T, typename iterator, typename Value>
+concept NetworkTypeIteratorReader = std::input_iterator<iterator> and requires(std::istream &is)
+{
+  {
+    T::template read<Value>(is)
+  } -> std::same_as<Value>;
+};
+
+template<typename T, typename Value>
+concept NetworkTypeWriter = requires(std::ostream &os, Value value)
+{
+  {
+    T::write(os, value)
+  } -> std::same_as<void>;
+};
