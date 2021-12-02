@@ -12,10 +12,10 @@ concept NetworkTypeReader = requires(std::istream &is)
 };
 
 template<typename T, typename iterator, typename Value>
-concept NetworkTypeIteratorReader = std::input_iterator<iterator> and requires(std::istream &is)
+concept NetworkTypeIteratorReader = std::input_iterator<iterator> and requires(iterator begin, iterator end)
 {
   {
-    T::template read<Value>(is)
+    T::template read<Value>(begin, end)
   } -> std::same_as<Value>;
 };
 
