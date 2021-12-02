@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <iostream>
 #include <iterator>
 #include <tuple>
@@ -15,32 +16,20 @@ class VarNumber
 
   template <std::integral number>
   static void write(std::ostream &os, number value);
-
- private:
-  template <std::integral number>
-  struct token {};
-
-  template <std::input_iterator iterator>
-  static std::tuple<bool, iterator, std::int32_t> read(iterator begin, iterator end, token<std::int32_t> t);
-
-  template <std::input_iterator iterator>
-  static std::tuple<bool, iterator, std::int64_t> read(iterator begin, iterator end, token<std::int64_t> t);
 };
+
 
 template <std::input_iterator iterator, std::integral number>
 std::tuple<bool, iterator, number> VarNumber::read(iterator begin, iterator end)
 {
-  return read(begin,end,token<number>{});
-}
-
-template <std::input_iterator iterator>
-std::tuple<bool, iterator, std::int32_t> VarNumber::read(iterator begin, iterator end, token<std::int32_t> t)
-{
-  std::int32_t result = 0;
-  std::uint8_t indx = 0;
+  number result = 0;
+  std::uint8_t index = 0;
   std::uint8_t read = 0;
 
   iterator it = begin;
+
+  constexpr std::uint8_t maxIndex =
+      std::ceil((std::numeric_limits<number>::digits + std::numeric_limits<number>::is_signed) / 7.0);
 
   do
   {
@@ -50,43 +39,25 @@ std::tuple<bool, iterator, std::int32_t> VarNumber::read(iterator begin, iterato
     }
 
     read = *(it++);
-    result |= static_cast<std::int32_t>(read & 0x7F) << (7 * indx++);
+    result |= static_cast<number>(read & 0x7F) << (7 * index++);
 
-    if (indx > 5)
+    if (index > maxIndex)
     {
-      throw std::overflow_error("VarInt is too big");
+      throw std::overflow_error("VarNumber is too big");
     }
   } while (read & 0x80);
 
   return {true, it, result};
 }
 
-template <std::input_iterator iterator>
-std::tuple<bool, iterator, std::int64_t> VarNumber::read(iterator begin, iterator end, token<std::int64_t> t)
+template<std::integral number>
+number VarNumber::read(std::istream &is)
 {
-  std::int64_t result = 0;
-  std::uint8_t indx = 0;
-  std::uint8_t read = 0;
+  auto begin = std::istreambuf_iterator<char>(is);
+  auto end = std::istreambuf_iterator<char>();
 
-  iterator it = begin;
-
-  do
-  {
-    if (it == end)
-    {
-      return {false, begin, 0};
-    }
-
-    read = *(it++);
-    result |= static_cast<std::int64_t>(read & 0x7F) << (indx++ * 7);
-
-    if (indx > 10)
-    {
-      throw std::overflow_error("VarLong is too big");
-    }
-  } while (read & 0x80);
-
-  return {true, it, result};
+  auto [valid, it, res] = VarNumber::read<decltype(begin), number>(begin, end);
+  return res;
 }
 
 
