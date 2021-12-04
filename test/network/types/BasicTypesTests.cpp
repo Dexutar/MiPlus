@@ -128,7 +128,7 @@ TEST_F(BasicTypesTest, WritesUint64Zero)
 {
   BasicTypes::write<std::uint64_t>(stream, 0);
 
-  checkBytes(0x00, 1);
+  checkBytes(0x00, 8);
 }
 
 TEST_F(BasicTypesTest, WritesUint64OneByte)
