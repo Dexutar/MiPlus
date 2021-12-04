@@ -5,7 +5,7 @@
 #include <sstream>
 
 #include "NetworkTypeTest.hh"
-#include "VarNumberMock.hh"
+#include "NetworkTypeHandlerMock.hh"
 #include "VarStringHandler.hh"
 
 using ::testing::_;
@@ -19,34 +19,34 @@ class VarStringTest : public NetworkTypeTest
 
 TEST_F(VarStringTest, ReadsEmptyString)
 {
-  VarNumberMock<std::int32_t> mock;
-  VarNumberMockProxy<std::int32_t>::mock = &mock;
+  NetworkTypeHandlerMock<std::int32_t> mock;
+  NetworkTypeHandlerMockProxy<std::int32_t>::mock = &mock;
 
   EXPECT_CALL(mock, read(_)).WillOnce(Return(0));
 
-  EXPECT_EQ("", ([&]{return VarStringHandler::read<std::string, VarNumberMockProxy<std::int32_t>>(stream);}()));
+  EXPECT_EQ("", ([&]{return VarStringHandler::read<std::string, NetworkTypeHandlerMockProxy<std::int32_t>>(stream);}()));
 }
 
 TEST_F(VarStringTest, ReadsString)
 {
-  VarNumberMock<std::int32_t> mock;
-  VarNumberMockProxy<std::int32_t>::mock = &mock;
+  NetworkTypeHandlerMock<std::int32_t> mock;
+  NetworkTypeHandlerMockProxy<std::int32_t>::mock = &mock;
 
   EXPECT_CALL(mock, read(_)).WillOnce(Return(TEST_STRING.size()));
 
   stream << TEST_STRING;
 
-  EXPECT_EQ(TEST_STRING, ([&]{return VarStringHandler::read<std::string, VarNumberMockProxy<std::int32_t>>(stream);}()));
+  EXPECT_EQ(TEST_STRING, ([&]{return VarStringHandler::read<std::string, NetworkTypeHandlerMockProxy<std::int32_t>>(stream);}()));
 }
 
 TEST_F(VarStringTest, WritesEmptyString)
 {
-  VarNumberMock<std::int32_t> mock;
-  VarNumberMockProxy<std::int32_t>::mock = &mock;
+  NetworkTypeHandlerMock<std::int32_t> mock;
+  NetworkTypeHandlerMockProxy<std::int32_t>::mock = &mock;
 
   EXPECT_CALL(mock, write(_, 0));
 
-  VarStringHandler::write<VarNumberMockProxy<std::int32_t>>(stream, "");
+  VarStringHandler::write<NetworkTypeHandlerMockProxy<std::int32_t>>(stream, "");
 
   std::string actual;
   stream >> actual;
@@ -56,12 +56,12 @@ TEST_F(VarStringTest, WritesEmptyString)
 
 TEST_F(VarStringTest, WritesString)
 {
-  VarNumberMock<std::int32_t> mock;
-  VarNumberMockProxy<std::int32_t>::mock = &mock;
+  NetworkTypeHandlerMock<std::int32_t> mock;
+  NetworkTypeHandlerMockProxy<std::int32_t>::mock = &mock;
 
   EXPECT_CALL(mock, write(_, TEST_STRING.size()));
 
-  VarStringHandler::write<VarNumberMockProxy<std::int32_t>>(stream, TEST_STRING);
+  VarStringHandler::write<NetworkTypeHandlerMockProxy<std::int32_t>>(stream, TEST_STRING);
 
   std::string actual;
   stream >> actual;
