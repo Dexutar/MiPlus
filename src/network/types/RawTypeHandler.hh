@@ -6,7 +6,7 @@
 #include <limits>
 #include <ostream>
 
-class RawTypesHandler
+class RawTypeHandler
 {
  public:
   template <std::integral number>
@@ -20,7 +20,7 @@ class RawTypesHandler
 
 template <std::integral number>
 requires(sizeof(number) <= 8)  
-number RawTypesHandler::read(std::istream &is)
+number RawTypeHandler::read(std::istream &is)
 {
   number res = 0;
   is.read(reinterpret_cast<char *>(&res), sizeof(res));
@@ -40,7 +40,7 @@ number RawTypesHandler::read(std::istream &is)
 
 template <std::integral number>
 requires(sizeof(number) <= 8) 
-void RawTypesHandler::write(std::ostream &os, number value)
+void RawTypeHandler::write(std::ostream &os, number value)
 {
   if constexpr (sizeof(number) > 1 and std::endian::native != std::endian::big) 
   {

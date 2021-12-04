@@ -3,15 +3,15 @@
 #include <string>
 
 #include "NetworkTypeHandlers.hh"
-#include "VarNumbersHandler.hh"
+#include "VarNumberHandler.hh"
 
 class VarStringHandler
 {
  public:
-  template <typename, NetworkTypeReader<std::int32_t> SizeReader = VarNumbersHandler>
+  template <typename, NetworkTypeReader<std::int32_t> SizeReader = VarNumberHandler>
   static std::string read(std::istream &is);
 
-  template <NetworkTypeWriter<std::int32_t> SizeWriter = VarNumbersHandler>
+  template <NetworkTypeWriter<std::int32_t> SizeWriter = VarNumberHandler>
   static void write(std::ostream &os, std::string_view string);
 };
 

@@ -3,10 +3,10 @@
 #include <ostream>
 #include <sstream>
 
-#include "RawTypesHandler.hh"
+#include "RawTypeHandler.hh"
 #include "NetworkTypeHandlers.hh"
 #include "Packet.hh"
-#include "VarNumbersHandler.hh"
+#include "VarNumberHandler.hh"
 
 class PongPacket : public Packet
 {
@@ -15,8 +15,8 @@ class PongPacket : public Packet
 
   PongPacket(std::int64_t payload) : payload{payload} {}
 
-  template<NetworkTypeWriter<std::uint8_t> OpcodeWriter = VarNumbersHandler,
-          NetworkTypeWriter<std::int64_t> PayloadWriter = RawTypesHandler>
+  template<NetworkTypeWriter<std::uint8_t> OpcodeWriter = VarNumberHandler,
+          NetworkTypeWriter<std::int64_t> PayloadWriter = RawTypeHandler>
   friend std::ostream &operator<<(std::ostream &os, const PongPacket &packet)
   {
     std::stringbuf sb;

@@ -6,7 +6,7 @@
 
 #include "NetworkTypeHandlers.hh"
 #include "Packet.hh"
-#include "VarNumbersHandler.hh"
+#include "VarNumberHandler.hh"
 #include "VarStringHandler.hh"
 
 class ResponsePacket : public Packet
@@ -16,7 +16,7 @@ class ResponsePacket : public Packet
 
   ResponsePacket(std::string &&response) : response{response} {}
 
-  template<NetworkTypeWriter<std::uint8_t> OpcodeWriter = VarNumbersHandler,
+  template<NetworkTypeWriter<std::uint8_t> OpcodeWriter = VarNumberHandler,
           NetworkTypeWriter<std::string> ResponseWriter = VarStringHandler>
   friend std::ostream &operator<<(std::ostream &os, const ResponsePacket &packet)
   {

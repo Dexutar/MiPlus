@@ -4,7 +4,7 @@
 
 #include "Packet.hh"
 #include "ProtocolError.hh"
-#include "VarNumbersHandler.hh"
+#include "VarNumberHandler.hh"
 
 namespace io = boost::asio;
 
@@ -125,7 +125,7 @@ void Channel::check_timeout()
 
 std::pair<Channel::MatchCondition::iterator, bool> Channel::MatchCondition::operator()(iterator begin, iterator end)
 {
-  auto [valid, it, value] = VarNumbersHandler::read<iterator, std::int32_t>(begin, end);
+  auto [valid, it, value] = VarNumberHandler::read<iterator, std::int32_t>(begin, end);
   packet_length = value;
   return {it, valid};
 }

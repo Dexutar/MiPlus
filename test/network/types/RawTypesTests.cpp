@@ -3,7 +3,7 @@
 #include <limits>
 #include <sstream>
 
-#include "RawTypesHandler.hh"
+#include "RawTypeHandler.hh"
 #include "NetworkTypeTest.hh"
 
 class RawTypesTest : public NetworkTypeTest
@@ -14,7 +14,7 @@ TEST_F(RawTypesTest, ReadsUint16Zero)
 {
   writeBytes(0x00, 1);
 
-  EXPECT_EQ(0, RawTypesHandler::read<std::uint16_t>(stream));
+  EXPECT_EQ(0, RawTypeHandler::read<std::uint16_t>(stream));
 }
 
 TEST_F(RawTypesTest, ReadsUint16OneByte)
@@ -22,21 +22,21 @@ TEST_F(RawTypesTest, ReadsUint16OneByte)
   writeBytes(0x00, 1);
   writeBytes(0xff, 1);
 
-  EXPECT_EQ(0xff, RawTypesHandler::read<std::uint16_t>(stream));
+  EXPECT_EQ(0xff, RawTypeHandler::read<std::uint16_t>(stream));
 }
 
 TEST_F(RawTypesTest, ReadsUint16TwoBytes)
 {
   writeBytes(0xff, 2);
 
-  EXPECT_EQ(0xffff, RawTypesHandler::read<std::uint16_t>(stream));
+  EXPECT_EQ(0xffff, RawTypeHandler::read<std::uint16_t>(stream));
 }
 
 TEST_F(RawTypesTest, ReadsUint64Zero)
 {
   writeBytes(0x00, 1);
 
-  EXPECT_EQ(0, RawTypesHandler::read<std::uint64_t>(stream));
+  EXPECT_EQ(0, RawTypeHandler::read<std::uint64_t>(stream));
 }
 
 TEST_F(RawTypesTest, ReadsUint64OneByte)
@@ -44,7 +44,7 @@ TEST_F(RawTypesTest, ReadsUint64OneByte)
   writeBytes(0x00, 7);
   writeBytes(0xff, 1);
 
-  EXPECT_EQ(0xff, RawTypesHandler::read<std::uint64_t>(stream));
+  EXPECT_EQ(0xff, RawTypeHandler::read<std::uint64_t>(stream));
 }
 
 TEST_F(RawTypesTest, ReadsUint64TwoBytes)
@@ -52,7 +52,7 @@ TEST_F(RawTypesTest, ReadsUint64TwoBytes)
   writeBytes(0x00, 6);
   writeBytes(0xff, 2);
 
-  EXPECT_EQ(0xffff, RawTypesHandler::read<std::uint64_t>(stream));
+  EXPECT_EQ(0xffff, RawTypeHandler::read<std::uint64_t>(stream));
 }
 
 TEST_F(RawTypesTest, ReadsUint64ThreeBytes)
@@ -60,7 +60,7 @@ TEST_F(RawTypesTest, ReadsUint64ThreeBytes)
   writeBytes(0x00, 5);
   writeBytes(0xff, 3);
 
-  EXPECT_EQ(0xffffff, RawTypesHandler::read<std::uint64_t>(stream));
+  EXPECT_EQ(0xffffff, RawTypeHandler::read<std::uint64_t>(stream));
 }
 
 TEST_F(RawTypesTest, ReadsUint64FourBytes)
@@ -68,7 +68,7 @@ TEST_F(RawTypesTest, ReadsUint64FourBytes)
   writeBytes(0x00, 4);
   writeBytes(0xff, 4);
 
-  EXPECT_EQ(0xffffffff, RawTypesHandler::read<std::uint64_t>(stream));
+  EXPECT_EQ(0xffffffff, RawTypeHandler::read<std::uint64_t>(stream));
 }
 
 TEST_F(RawTypesTest, ReadsUint64FiveBytes)
@@ -76,7 +76,7 @@ TEST_F(RawTypesTest, ReadsUint64FiveBytes)
   writeBytes(0x00, 3);
   writeBytes(0xff, 5);
 
-  EXPECT_EQ(0xffffffffff, RawTypesHandler::read<std::uint64_t>(stream));
+  EXPECT_EQ(0xffffffffff, RawTypeHandler::read<std::uint64_t>(stream));
 }
 
 TEST_F(RawTypesTest, ReadsUint64SixBytes)
@@ -84,7 +84,7 @@ TEST_F(RawTypesTest, ReadsUint64SixBytes)
   writeBytes(0x00, 2);
   writeBytes(0xff, 6);
 
-  EXPECT_EQ(0xffffffffffff, RawTypesHandler::read<std::uint64_t>(stream));
+  EXPECT_EQ(0xffffffffffff, RawTypeHandler::read<std::uint64_t>(stream));
 }
 
 TEST_F(RawTypesTest, ReadsUint64SevenBytes)
@@ -92,26 +92,26 @@ TEST_F(RawTypesTest, ReadsUint64SevenBytes)
   writeBytes(0x00, 1);
   writeBytes(0xff, 7);
 
-  EXPECT_EQ(0xffffffffffffff, RawTypesHandler::read<std::uint64_t>(stream));
+  EXPECT_EQ(0xffffffffffffff, RawTypeHandler::read<std::uint64_t>(stream));
 }
 
 TEST_F(RawTypesTest, ReadsUint64EightBytes)
 {
   writeBytes(0xff, 8);
 
-  EXPECT_EQ(0xffffffffffffffff, RawTypesHandler::read<std::uint64_t>(stream));
+  EXPECT_EQ(0xffffffffffffffff, RawTypeHandler::read<std::uint64_t>(stream));
 }
 
 TEST_F(RawTypesTest, WritesUint16Zero)
 {
-  RawTypesHandler::write<std::uint16_t>(stream, 0);
+  RawTypeHandler::write<std::uint16_t>(stream, 0);
 
   checkBytes(0x00, 1);
 }
 
 TEST_F(RawTypesTest, WritesUint16OneByte)
 {
-  RawTypesHandler::write<std::uint16_t>(stream, 0xff);
+  RawTypeHandler::write<std::uint16_t>(stream, 0xff);
 
   checkBytes(0x00, 1);
   checkBytes(0xff, 1);
@@ -119,21 +119,21 @@ TEST_F(RawTypesTest, WritesUint16OneByte)
 
 TEST_F(RawTypesTest, WritesUint16TwoBytes)
 {
-  RawTypesHandler::write<std::uint16_t>(stream, 0xffff);
+  RawTypeHandler::write<std::uint16_t>(stream, 0xffff);
 
   checkBytes(0xff, 2);
 }
 
 TEST_F(RawTypesTest, WritesUint64Zero)
 {
-  RawTypesHandler::write<std::uint64_t>(stream, 0);
+  RawTypeHandler::write<std::uint64_t>(stream, 0);
 
   checkBytes(0x00, 8);
 }
 
 TEST_F(RawTypesTest, WritesUint64OneByte)
 {
-  RawTypesHandler::write<std::uint64_t>(stream, 0xff);
+  RawTypeHandler::write<std::uint64_t>(stream, 0xff);
 
   checkBytes(0x00, 7);
   checkBytes(0xff, 1);
@@ -141,7 +141,7 @@ TEST_F(RawTypesTest, WritesUint64OneByte)
 
 TEST_F(RawTypesTest, WritesUint64TwoBytes)
 {
-  RawTypesHandler::write<std::uint64_t>(stream, 0xffff);
+  RawTypeHandler::write<std::uint64_t>(stream, 0xffff);
 
   checkBytes(0x00, 6);
   checkBytes(0xff, 2);
@@ -149,7 +149,7 @@ TEST_F(RawTypesTest, WritesUint64TwoBytes)
 
 TEST_F(RawTypesTest, WritesUint64ThreeBytes)
 {
-  RawTypesHandler::write<std::uint64_t>(stream, 0xffffff);
+  RawTypeHandler::write<std::uint64_t>(stream, 0xffffff);
 
   checkBytes(0x00, 5);
   checkBytes(0xff, 3);
@@ -157,7 +157,7 @@ TEST_F(RawTypesTest, WritesUint64ThreeBytes)
 
 TEST_F(RawTypesTest, WritesUint64FourBytes)
 {
-  RawTypesHandler::write<std::uint64_t>(stream, 0xffffffff);
+  RawTypeHandler::write<std::uint64_t>(stream, 0xffffffff);
 
   checkBytes(0x00, 4);
   checkBytes(0xff, 4);
@@ -165,7 +165,7 @@ TEST_F(RawTypesTest, WritesUint64FourBytes)
 
 TEST_F(RawTypesTest, WritesUint64FiveBytes)
 {
-  RawTypesHandler::write<std::uint64_t>(stream, 0xffffffffff);
+  RawTypeHandler::write<std::uint64_t>(stream, 0xffffffffff);
 
   checkBytes(0x00, 3);
   checkBytes(0xff, 5);
@@ -173,7 +173,7 @@ TEST_F(RawTypesTest, WritesUint64FiveBytes)
 
 TEST_F(RawTypesTest, WritesUint64SixBytes)
 {
-  RawTypesHandler::write<std::uint64_t>(stream, 0xffffffffffff);
+  RawTypeHandler::write<std::uint64_t>(stream, 0xffffffffffff);
 
   checkBytes(0x00, 2);
   checkBytes(0xff, 6);
@@ -181,7 +181,7 @@ TEST_F(RawTypesTest, WritesUint64SixBytes)
 
 TEST_F(RawTypesTest, WritesUint64SevenBytes)
 {
-  RawTypesHandler::write<std::uint64_t>(stream, 0xffffffffffffff);
+  RawTypeHandler::write<std::uint64_t>(stream, 0xffffffffffffff);
 
   checkBytes(0x00, 1);
   checkBytes(0xff, 7);
@@ -189,7 +189,7 @@ TEST_F(RawTypesTest, WritesUint64SevenBytes)
 
 TEST_F(RawTypesTest, WritesUint64EightBytes)
 {
-  RawTypesHandler::write<std::uint64_t>(stream, 0xffffffffffffffff);
+  RawTypeHandler::write<std::uint64_t>(stream, 0xffffffffffffffff);
 
   checkBytes(0xff, 8);
 }

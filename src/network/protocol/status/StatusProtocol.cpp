@@ -8,7 +8,7 @@
 
 void StatusProtocol::inbound(std::istream &is)
 {
-  int32_t opcode = VarNumbersHandler::read<std::int32_t>(is);
+  int32_t opcode = VarNumberHandler::read<std::int32_t>(is);
 
   if (opcode == RequestPacket::opcode)
   {

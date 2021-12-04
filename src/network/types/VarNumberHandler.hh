@@ -5,7 +5,7 @@
 #include <iterator>
 #include <tuple>
 
-class VarNumbersHandler
+class VarNumberHandler
 {
  public:
   template <std::input_iterator iterator, std::integral number>
@@ -20,7 +20,7 @@ class VarNumbersHandler
 
 
 template <std::input_iterator iterator, std::integral number>
-std::tuple<bool, iterator, number> VarNumbersHandler::read(iterator begin, iterator end)
+std::tuple<bool, iterator, number> VarNumberHandler::read(iterator begin, iterator end)
 {
   number result = 0;
   std::uint8_t index = 0;
@@ -51,18 +51,18 @@ std::tuple<bool, iterator, number> VarNumbersHandler::read(iterator begin, itera
 }
 
 template<std::integral number>
-number VarNumbersHandler::read(std::istream &is)
+number VarNumberHandler::read(std::istream &is)
 {
   auto begin = std::istreambuf_iterator<char>(is);
   auto end = std::istreambuf_iterator<char>();
 
-  auto [valid, it, res] = VarNumbersHandler::read<decltype(begin), number>(begin, end);
+  auto [valid, it, res] = VarNumberHandler::read<decltype(begin), number>(begin, end);
   return res;
 }
 
 
 template <std::integral number>
-void VarNumbersHandler::write(std::ostream &os, number value)
+void VarNumberHandler::write(std::ostream &os, number value)
 {
   constexpr number mask = static_cast<number>(-1) ^ 0x7f;
 
