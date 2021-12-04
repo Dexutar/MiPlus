@@ -3,8 +3,8 @@
 #include <iostream>
 #include <sstream>
 
-#include "BasicTypes.hh"
-#include "NetworkTypes.hh"
+#include "RawTypesHandler.hh"
+#include "NetworkTypeHandlers.hh"
 #include "Packet.hh"
 
 class PingPacket : public Packet
@@ -12,7 +12,7 @@ class PingPacket : public Packet
  public:
   static constexpr std::uint8_t opcode = 1;
 
-  template<NetworkTypeReader<std::uint64_t> PayloadReader = BasicTypes>
+  template<NetworkTypeReader<std::uint64_t> PayloadReader = RawTypesHandler>
   friend std::istream &operator>>(std::istream &is, PingPacket &packet)
   {
     packet.payload = PayloadReader::template read<std::uint64_t>(is);

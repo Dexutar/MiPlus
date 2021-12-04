@@ -2,21 +2,21 @@
 
 #include <string>
 
-#include "NetworkTypes.hh"
-#include "VarNumber.hh"
+#include "NetworkTypeHandlers.hh"
+#include "VarNumbersHandler.hh"
 
-class VarString
+class VarStringHandler
 {
  public:
-  template <typename, NetworkTypeReader<std::int32_t> SizeReader = VarNumber>
+  template <typename, NetworkTypeReader<std::int32_t> SizeReader = VarNumbersHandler>
   static std::string read(std::istream &is);
 
-  template <NetworkTypeWriter<std::int32_t> SizeWriter = VarNumber>
+  template <NetworkTypeWriter<std::int32_t> SizeWriter = VarNumbersHandler>
   static void write(std::ostream &os, std::string_view string);
 };
 
 template <typename, NetworkTypeReader<std::int32_t> SizeReader>
-std::string VarString::read(std::istream &is)
+std::string VarStringHandler::read(std::istream &is)
 {
   std::string res;
   int size = SizeReader::template read<std::int32_t>(is);
@@ -25,7 +25,7 @@ std::string VarString::read(std::istream &is)
 }
 
 template <NetworkTypeWriter<std::int32_t> SizeWriter>
-void VarString::write(std::ostream &os, std::string_view string)
+void VarStringHandler::write(std::ostream &os, std::string_view string)
 {
   SizeWriter::write(os, string.size());
   os << string;

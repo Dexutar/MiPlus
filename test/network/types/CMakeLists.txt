@@ -1,7 +1,7 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/src/network/types/testing)
 
-SET(NETWORK_TYPE_TEST_SOURCES BasicTypesTests.cpp
+SET(NETWORK_TYPE_TEST_SOURCES RawTypesTests.cpp
                               VarNumberTests.cpp
                               VarStringTests.cpp
                               )

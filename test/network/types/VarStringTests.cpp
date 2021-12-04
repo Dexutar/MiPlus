@@ -6,7 +6,7 @@
 
 #include "NetworkTypeTest.hh"
 #include "VarNumberMock.hh"
-#include "VarString.hh"
+#include "VarStringHandler.hh"
 
 using ::testing::_;
 using ::testing::Return;
@@ -24,7 +24,7 @@ TEST_F(VarStringTest, ReadsEmptyString)
 
   EXPECT_CALL(mock, read(_)).WillOnce(Return(0));
 
-  EXPECT_EQ("", ([&]{return VarString::read<std::string, VarNumberMockProxy<std::int32_t>>(stream);}()));
+  EXPECT_EQ("", ([&]{return VarStringHandler::read<std::string, VarNumberMockProxy<std::int32_t>>(stream);}()));
 }
 
 TEST_F(VarStringTest, ReadsString)
@@ -36,7 +36,7 @@ TEST_F(VarStringTest, ReadsString)
 
   stream << TEST_STRING;
 
-  EXPECT_EQ(TEST_STRING, ([&]{return VarString::read<std::string, VarNumberMockProxy<std::int32_t>>(stream);}()));
+  EXPECT_EQ(TEST_STRING, ([&]{return VarStringHandler::read<std::string, VarNumberMockProxy<std::int32_t>>(stream);}()));
 }
 
 TEST_F(VarStringTest, WritesEmptyString)
@@ -46,7 +46,7 @@ TEST_F(VarStringTest, WritesEmptyString)
 
   EXPECT_CALL(mock, write(_, 0));
 
-  VarString::write<VarNumberMockProxy<std::int32_t>>(stream, "");
+  VarStringHandler::write<VarNumberMockProxy<std::int32_t>>(stream, "");
 
   std::string actual;
   stream >> actual;
@@ -61,7 +61,7 @@ TEST_F(VarStringTest, WritesString)
 
   EXPECT_CALL(mock, write(_, TEST_STRING.size()));
 
-  VarString::write<VarNumberMockProxy<std::int32_t>>(stream, TEST_STRING);
+  VarStringHandler::write<VarNumberMockProxy<std::int32_t>>(stream, TEST_STRING);
 
   std::string actual;
   stream >> actual;

@@ -4,22 +4,22 @@
 #include <sstream>
 #include <string>
 
-#include "BasicTypes.hh"
+#include "RawTypesHandler.hh"
 #include "ConnectionState.hh"
-#include "NetworkTypes.hh"
+#include "NetworkTypeHandlers.hh"
 #include "Packet.hh"
-#include "VarNumber.hh"
-#include "VarString.hh"
+#include "VarNumbersHandler.hh"
+#include "VarStringHandler.hh"
 
 class HandshakePacket : Packet
 {
  public:
   static constexpr std::uint8_t opcode = 0;
 
-  template<NetworkTypeReader<std::int32_t> VersionReader = VarNumber,
-          NetworkTypeReader<std::string> AddressReader = VarString,
-          NetworkTypeReader<std::uint16_t> PortReader = BasicTypes,
-          NetworkTypeReader<std::int32_t> StateReader = VarNumber>
+  template<NetworkTypeReader<std::int32_t> VersionReader = VarNumbersHandler,
+          NetworkTypeReader<std::string> AddressReader = VarStringHandler,
+          NetworkTypeReader<std::uint16_t> PortReader = RawTypesHandler,
+          NetworkTypeReader<std::int32_t> StateReader = VarNumbersHandler>
   friend std::istream &operator>>(std::istream &is, HandshakePacket &packet)
   {
     packet.version = VersionReader::template read<std::int32_t>(is);

@@ -4,10 +4,10 @@
 #include <sstream>
 #include <string>
 
-#include "NetworkTypes.hh"
+#include "NetworkTypeHandlers.hh"
 #include "Packet.hh"
-#include "VarNumber.hh"
-#include "VarString.hh"
+#include "VarNumbersHandler.hh"
+#include "VarStringHandler.hh"
 
 class ResponsePacket : public Packet
 {
@@ -16,8 +16,8 @@ class ResponsePacket : public Packet
 
   ResponsePacket(std::string &&response) : response{response} {}
 
-  template<NetworkTypeWriter<std::uint8_t> OpcodeWriter = VarNumber,
-          NetworkTypeWriter<std::string> ResponseWriter = VarString>
+  template<NetworkTypeWriter<std::uint8_t> OpcodeWriter = VarNumbersHandler,
+          NetworkTypeWriter<std::string> ResponseWriter = VarStringHandler>
   friend std::ostream &operator<<(std::ostream &os, const ResponsePacket &packet)
   {
     std::stringbuf sb;
