@@ -19,7 +19,10 @@ class PingPacket : public Packet
     return is;
   }
 
-  std::int64_t getPayload() const;
+  std::int64_t getPayload() const
+  {
+    return payload;
+  }
 
  private:
   std::int64_t payload;

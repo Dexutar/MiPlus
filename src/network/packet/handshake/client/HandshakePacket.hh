@@ -30,7 +30,10 @@ class HandshakePacket : Packet
     return is;
   }
 
-  ConnectionState getRequestedState() const;
+  ConnectionState getRequestedState() const
+  {
+    return requested_state;
+  }
 
  private:
   int version;
