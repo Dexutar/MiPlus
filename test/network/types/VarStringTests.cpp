@@ -3,9 +3,10 @@
 
 #include <limits>
 #include <sstream>
+#include <string_view>
 
-#include "NetworkTypeTest.hh"
 #include "NetworkTypeHandlerMock.hh"
+#include "NetworkTypeTest.hh"
 #include "VarStringHandler.hh"
 
 using ::testing::_;
