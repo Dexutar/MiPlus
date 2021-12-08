@@ -16,7 +16,8 @@ class PongPacket : public Packet
   PongPacket(std::int64_t payload) : payload{payload} {}
 
   template<NetworkTypeWriter<std::uint8_t> OpcodeWriter = VarNumberHandler,
-          NetworkTypeWriter<std::int64_t> PayloadWriter = RawTypeHandler>
+          NetworkTypeWriter<std::int64_t> PayloadWriter = RawTypeHandler,
+          NetworkTypeWriter<std::streamsize> SizeWriter = VarNumberHandler>
   friend std::ostream &operator<<(std::ostream &os, const PongPacket &packet)
   {
     std::stringbuf sb;
@@ -25,7 +26,7 @@ class PongPacket : public Packet
     OpcodeWriter::write(data, PongPacket::opcode);
     PayloadWriter::write(data, packet.payload);
 
-    return packet.write_header(os, data);
+    return packet.write_header<SizeWriter>(os, data);
   }
 
  private:
