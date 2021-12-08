@@ -29,7 +29,7 @@ class ResponsePacketTest : public PacketTest
 };
 
 
-TEST_F(ResponsePacketTest, ReadsPacket)
+TEST_F(ResponsePacketTest, WritesPacket)
 {
   NetworkTypeHandlerMock<std::uint8_t> opcodeMock;
   NetworkTypeHandlerMockProxy<std::uint8_t>::mock = &opcodeMock;
