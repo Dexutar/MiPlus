@@ -18,7 +18,7 @@ Channel::Channel(boost::asio::ip::tcp::socket &&socket, boost::asio::io_context 
     write_strand{io_context},
     in_buffer{Packet::max_packet_length},
     protocol{std::move(protocol)},
-    remoteAddress{this->socket.remote_endpoint().address().to_string() + ":" + std::to_string(this->socket.remote_endpoint().port())}
+    remote_address{this->socket.remote_endpoint().address().to_string() + ":" + std::to_string(this->socket.remote_endpoint().port())}
 {
 }
 
@@ -87,8 +87,7 @@ void Channel::read_packet()
       if (not error)
       {
         input_deadline.expires_at(io::steady_timer::time_point::max());
-        std::cout << remoteAddress << ": received packed with length " << packet_length
-                  << std::endl;
+        std::cout << remote_address << ": received packed with length " << packet_length << std::endl;
         std::istream stream(&in_buffer);
         protocol->inbound(stream);
         if (active) read_header();

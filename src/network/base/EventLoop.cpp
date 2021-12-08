@@ -15,4 +15,4 @@ void EventLoop::join()
   }
 }
 
-boost::asio::io_context& EventLoop::getContext() { return io_context; }
+boost::asio::io_context& EventLoop::get_context() { return io_context; }

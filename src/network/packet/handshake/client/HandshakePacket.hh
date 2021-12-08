@@ -30,7 +30,7 @@ class HandshakePacket : Packet
     return is;
   }
 
-  ConnectionState getRequestedState() const
+  ConnectionState get_requested_state() const
   {
     return requested_state;
   }

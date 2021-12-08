@@ -22,5 +22,5 @@ void HandshakeProtocol::inbound(std::istream &is)
 
 void HandshakeProtocol::handle(const HandshakePacket &packet)
 {
-  session.setState(packet.getRequestedState());
+  session.set_state(packet.get_requested_state());
 }

@@ -12,7 +12,7 @@ class EventLoop
   void shutdown();
   void join();
 
-  boost::asio::io_context& getContext();
+  boost::asio::io_context& get_context();
 
  private:
   boost::asio::io_context io_context;

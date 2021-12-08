@@ -29,7 +29,7 @@ class Channel : public std::enable_shared_from_this<Channel>
 
   void start();
 
-  const std::string &getRemoteAddress() const { return remoteAddress; }
+  const std::string &get_remote_address() const { return remote_address; }
 
   void setProtocol(std::unique_ptr<Protocol> &&protocol);
 
@@ -57,7 +57,7 @@ class Channel : public std::enable_shared_from_this<Channel>
 
   std::unique_ptr<Protocol> protocol;
 
-  std::string remoteAddress;
+  std::string remote_address;
 
   std::size_t packet_length;
 };

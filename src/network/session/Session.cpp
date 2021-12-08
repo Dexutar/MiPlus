@@ -15,9 +15,9 @@ Session::Session(tcp::socket &&socket, io::io_context &io_context, SessionRegist
   channel->start();
 }
 
-std::string Session::getID() const { return channel->getRemoteAddress(); }
+std::string Session::getID() const { return channel->get_remote_address(); }
 
-void Session::setState(ConnectionState state)
+void Session::set_state(ConnectionState state)
 {
   channel->setProtocol(std::move(ProtocolFactory::create(state, *this)));
 }

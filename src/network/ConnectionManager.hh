@@ -10,5 +10,5 @@ class ConnectionManager
 
  private:
   Bootstrap bootstrap;
-  SessionRegistry sessionRegistry;
+  SessionRegistry sessions;
 };

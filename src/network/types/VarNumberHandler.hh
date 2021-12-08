@@ -28,7 +28,7 @@ std::tuple<bool, iterator, number> VarNumberHandler::read(iterator begin, iterat
 
   iterator it = begin;
 
-  constexpr std::uint8_t maxIndex =
+  constexpr std::uint8_t max_index =
       std::ceil((std::numeric_limits<number>::digits + std::numeric_limits<number>::is_signed) / 7.0);
 
   do
@@ -41,7 +41,7 @@ std::tuple<bool, iterator, number> VarNumberHandler::read(iterator begin, iterat
     read = *(it++);
     result |= static_cast<number>(read & 0x7F) << (7 * index++);
 
-    if (index > maxIndex)
+    if (index > max_index)
     {
       throw std::overflow_error("VarNumber is too big");
     }

@@ -46,5 +46,5 @@ TEST_F(HandshakePacketTest, ReadsPacket)
               NetworkTypeHandlerMockProxy<std::int32_t>>
   (stream, packet);
 
-  EXPECT_EQ(REQUESTED_STATE, packet.getRequestedState());
+  EXPECT_EQ(REQUESTED_STATE, packet.get_requested_state());
 }

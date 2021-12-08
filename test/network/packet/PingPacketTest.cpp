@@ -25,5 +25,5 @@ TEST_F(PingPacketTest, ReadsPacket)
   operator>> <NetworkTypeHandlerMockProxy<std::int64_t>>
   (stream, packet);
 
-  EXPECT_EQ(PAYLOAD, packet.getPayload());
+  EXPECT_EQ(PAYLOAD, packet.get_payload());
 }

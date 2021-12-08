@@ -17,7 +17,7 @@ class Session
 
   std::string getID() const;
 
-  void setState(ConnectionState state);
+  void set_state(ConnectionState state);
 
   template<typename Packet>
   void send(const Packet &packet);

@@ -42,7 +42,7 @@ void StatusProtocol::handle()
 
 void StatusProtocol::handle(const PingPacket &packet) const
 {
-  PongPacket pong{packet.getPayload()};
+  PongPacket pong{packet.get_payload()};
   session.send(pong);
   session.terminate();
 }
