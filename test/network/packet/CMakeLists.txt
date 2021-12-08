@@ -4,6 +4,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src/network/types/testing)
 SET(PACKET_TEST_SOURCES HandshakePacketTest.cpp
                         PingPacketTest.cpp
                         PongPacketTest.cpp
+                        ResponsePacketTest.cpp
                         )
 
 add_executable(PacketTests ${PACKET_TEST_SOURCES})
