@@ -12,8 +12,7 @@ class SessionRegistry;
 class Session
 {
  public:
-  Session(boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context,
-          SessionRegistry &session_registry);
+  Session(boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, SessionRegistry &session_registry);
 
   std::string getID() const;
 

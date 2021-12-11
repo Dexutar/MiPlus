@@ -10,15 +10,14 @@ namespace io = boost::asio;
 
 using error_code = boost::system::error_code;
 
-Channel::Channel(boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context,
-                 std::unique_ptr<Protocol> &&protocol)
-  : active{true},
-    socket{std::move(socket)},
-    input_deadline{io_context},
-    write_strand{io_context},
-    in_buffer{Packet::max_packet_length},
-    protocol{std::move(protocol)},
-    remote_address{this->socket.remote_endpoint().address().to_string() + ":" + std::to_string(this->socket.remote_endpoint().port())}
+Channel::Channel(boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, std::unique_ptr<Protocol> &&protocol)
+    : active{true},
+      socket{std::move(socket)},
+      input_deadline{io_context},
+      write_strand{io_context},
+      in_buffer{Packet::max_packet_length},
+      protocol{std::move(protocol)},
+      remote_address{this->socket.remote_endpoint().address().to_string() + ":" + std::to_string(this->socket.remote_endpoint().port())}
 {
 }
 

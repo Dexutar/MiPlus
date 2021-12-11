@@ -7,10 +7,8 @@ namespace io = boost::asio;
 using tcp = io::ip::tcp;
 
 Session::Session(tcp::socket &&socket, io::io_context &io_context, SessionRegistry &session_registry)
-  : channel{std::make_shared<Channel>(
-        std::move(socket), io_context,
-        std::move(ProtocolFactory::create(ConnectionState::Handshake, *this)))},
-    session_registry{session_registry}
+    : channel{std::make_shared<Channel>(std::move(socket), io_context, std::move(ProtocolFactory::create(ConnectionState::Handshake, *this)))},
+      session_registry{session_registry}
 {
   channel->start();
 }
