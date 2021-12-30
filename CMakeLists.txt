@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(MiPlus  VERSION 1.0
-                              DESCRIPTION "A cpp Minecraft server"
-                              LANGUAGES CXX)
+                DESCRIPTION "A cpp Minecraft server"
+                LANGUAGES CXX)
 
 find_package (Boost 1.75 REQUIRED)
 find_package (Threads REQUIRED)
