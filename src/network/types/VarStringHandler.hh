@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "NetworkTypeHandlers.hh"
+#include "NetworkTypeHandlerConcepts.hh"
 #include "VarNumberHandler.hh"
 
 struct VarStringHandler

@@ -3,7 +3,7 @@
 #include <ostream>
 #include <sstream>
 
-#include "NetworkTypeHandlers.hh"
+#include "NetworkTypeHandlerConcepts.hh"
 #include "Packet.hh"
 #include "RawTypeHandler.hh"
 #include "VarNumberHandler.hh"

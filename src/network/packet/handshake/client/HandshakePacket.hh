@@ -5,7 +5,7 @@
 #include <string>
 
 #include "ConnectionState.hh"
-#include "NetworkTypeHandlers.hh"
+#include "NetworkTypeHandlerConcepts.hh"
 #include "Packet.hh"
 #include "RawTypeHandler.hh"
 #include "VarNumberHandler.hh"
