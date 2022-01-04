@@ -4,10 +4,10 @@
 #include <sstream>
 #include <string>
 
-#include "RawTypeHandler.hh"
 #include "ConnectionState.hh"
 #include "NetworkTypeHandlers.hh"
 #include "Packet.hh"
+#include "RawTypeHandler.hh"
 #include "VarNumberHandler.hh"
 #include "VarStringHandler.hh"
 

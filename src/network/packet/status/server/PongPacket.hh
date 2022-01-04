@@ -3,9 +3,9 @@
 #include <ostream>
 #include <sstream>
 
-#include "RawTypeHandler.hh"
 #include "NetworkTypeHandlers.hh"
 #include "Packet.hh"
+#include "RawTypeHandler.hh"
 #include "VarNumberHandler.hh"
 
 class PongPacket : public Packet

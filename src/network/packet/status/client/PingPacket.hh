@@ -3,9 +3,9 @@
 #include <iostream>
 #include <sstream>
 
-#include "RawTypeHandler.hh"
 #include "NetworkTypeHandlers.hh"
 #include "Packet.hh"
+#include "RawTypeHandler.hh"
 
 class PingPacket : public Packet
 {
