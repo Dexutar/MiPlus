@@ -5,9 +5,8 @@
 #include "NetworkTypeHandlers.hh"
 #include "VarNumberHandler.hh"
 
-class VarStringHandler
+struct VarStringHandler
 {
- public:
   template <typename, NetworkTypeReader<std::int32_t> SizeReader = VarNumberHandler>
   static std::string read(std::istream &is);
 

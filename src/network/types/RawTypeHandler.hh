@@ -6,9 +6,8 @@
 #include <limits>
 #include <ostream>
 
-class RawTypeHandler
+struct RawTypeHandler
 {
- public:
   template <std::integral number>
   requires(sizeof(number) <= 8) 
   static number read(std::istream &is);

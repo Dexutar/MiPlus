@@ -5,9 +5,8 @@
 #include <iterator>
 #include <tuple>
 
-class VarNumberHandler
+struct VarNumberHandler
 {
- public:
   template <std::input_iterator iterator, std::integral number>
   static std::tuple<bool, iterator, number> read(iterator begin, iterator end);
 
