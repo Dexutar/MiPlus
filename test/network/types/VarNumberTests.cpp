@@ -5,6 +5,9 @@
 #include "NetworkTypeTest.hh"
 #include "VarNumberHandler.hh"
 
+using namespace miplus::network;
+using miplus::testing::network::NetworkTypeTest;
+
 class VarIntTest : public NetworkTypeTest
 {
 };

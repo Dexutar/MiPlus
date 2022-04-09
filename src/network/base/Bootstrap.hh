@@ -7,6 +7,11 @@
 #include "Session.hh"
 #include "SessionRegistry.hh"
 
+namespace miplus
+{
+namespace network
+{
+
 class Bootstrap
 {
  public:
@@ -27,3 +32,6 @@ class Bootstrap
 
   SessionRegistry &sessions;
 };
+
+}  // namespace network
+}  // namespace miplus

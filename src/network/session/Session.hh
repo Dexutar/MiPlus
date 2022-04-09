@@ -7,6 +7,11 @@
 #include "ConnectionState.hh"
 #include "Packet.hh"
 
+namespace miplus
+{
+namespace network
+{
+
 class SessionRegistry;
 
 class Session
@@ -18,7 +23,7 @@ class Session
 
   void set_state(ConnectionState state);
 
-  template<typename Packet>
+  template <typename Packet>
   void send(const Packet &packet);
 
   void terminate();
@@ -28,8 +33,11 @@ class Session
   SessionRegistry &session_registry;
 };
 
-template<typename Packet>
+template <typename Packet>
 void Session::send(const Packet &packet)
 {
   channel->send(packet);
 }
+
+}  // namespace network
+}  // namespace miplus

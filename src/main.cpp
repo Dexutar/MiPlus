@@ -3,4 +3,9 @@
 #include "ConnectionManager.hh"
 #include "Server.hh"
 
-int main() { ConnectionManager cm{25565}; }
+using namespace miplus;
+
+int main()
+{
+  network::ConnectionManager connectionManager{25565};
+}

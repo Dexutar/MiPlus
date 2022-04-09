@@ -5,6 +5,11 @@
 #include <iterator>
 #include <tuple>
 
+namespace miplus
+{
+namespace network
+{
+
 struct VarNumberHandler
 {
   template <std::input_iterator iterator, std::integral number>
@@ -17,7 +22,6 @@ struct VarNumberHandler
   static void write(std::ostream &os, number value);
 };
 
-
 template <std::input_iterator iterator, std::integral number>
 std::tuple<bool, iterator, number> VarNumberHandler::read(iterator begin, iterator end)
 {
@@ -27,8 +31,7 @@ std::tuple<bool, iterator, number> VarNumberHandler::read(iterator begin, iterat
 
   iterator it = begin;
 
-  constexpr std::uint8_t max_index =
-      std::ceil((std::numeric_limits<number>::digits + std::numeric_limits<number>::is_signed) / 7.0);
+  constexpr std::uint8_t max_index = std::ceil((std::numeric_limits<number>::digits + std::numeric_limits<number>::is_signed) / 7.0);
 
   do
   {
@@ -49,7 +52,7 @@ std::tuple<bool, iterator, number> VarNumberHandler::read(iterator begin, iterat
   return {true, it, result};
 }
 
-template<std::integral number>
+template <std::integral number>
 number VarNumberHandler::read(std::istream &is)
 {
   auto begin = std::istreambuf_iterator<char>(is);
@@ -58,7 +61,6 @@ number VarNumberHandler::read(std::istream &is)
   auto [valid, it, res] = VarNumberHandler::read<decltype(begin), number>(begin, end);
   return res;
 }
-
 
 template <std::integral number>
 void VarNumberHandler::write(std::ostream &os, number value)
@@ -73,3 +75,6 @@ void VarNumberHandler::write(std::ostream &os, number value)
 
   os << static_cast<std::uint8_t>(value);
 }
+
+}  // namespace network
+}  // namespace miplus

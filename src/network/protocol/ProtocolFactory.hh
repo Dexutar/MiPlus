@@ -8,6 +8,11 @@
 #include "Session.hh"
 #include "StatusProtocol.hh"
 
+namespace miplus
+{
+namespace network
+{
+
 class ProtocolFactory
 {
  public:
@@ -23,3 +28,6 @@ class ProtocolFactory
     return std::unique_ptr<Protocol>{};
   }
 };
+
+}  // namespace network
+}  // namespace miplus

@@ -8,6 +8,11 @@
 
 #include "Protocol.hh"
 
+namespace miplus
+{
+namespace network
+{
+
 class Channel : public std::enable_shared_from_this<Channel>
 {
  public:
@@ -83,10 +88,13 @@ void Channel::send(const Packet &packet)
   }
 }
 
+}  // namespace network
+}  // namespace miplus
+
 namespace boost::asio
 {
   template <>
-  struct is_match_condition<Channel::MatchCondition> : public boost::true_type
+  struct is_match_condition<miplus::network::Channel::MatchCondition> : public boost::true_type
   {
   };
 }  // namespace boost::asio

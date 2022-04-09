@@ -9,6 +9,11 @@
 #include "VarNumberHandler.hh"
 #include "VarStringHandler.hh"
 
+namespace miplus
+{
+namespace network
+{
+
 class ResponsePacket : public Packet
 {
  public:
@@ -16,9 +21,9 @@ class ResponsePacket : public Packet
 
   ResponsePacket(std::string_view response) : response{response} {}
 
-  template<NetworkTypeWriter<std::uint8_t> OpcodeWriter = VarNumberHandler,
-          NetworkTypeWriter<std::string_view> ResponseWriter = VarStringHandler,
-          NetworkTypeWriter<std::streamsize> SizeWriter = VarNumberHandler>
+  template <NetworkTypeWriter<std::uint8_t>     OpcodeWriter   = VarNumberHandler, 
+            NetworkTypeWriter<std::string_view> ResponseWriter = VarStringHandler,
+            NetworkTypeWriter<std::streamsize>  SizeWriter     = VarNumberHandler>
   friend std::ostream &operator<<(std::ostream &os, const ResponsePacket &packet)
   {
     std::stringbuf sb;
@@ -33,3 +38,6 @@ class ResponsePacket : public Packet
  private:
   std::string_view response;
 };
+
+}  // namespace network
+}  // namespace miplus

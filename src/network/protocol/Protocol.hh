@@ -3,6 +3,11 @@
 #include <boost/system/error_code.hpp>
 #include <iostream>
 
+namespace miplus
+{
+namespace network
+{
+
 class Session;
 
 class Protocol
@@ -16,3 +21,6 @@ class Protocol
  protected:
   Session &session;
 };
+
+}  // namespace network
+}  // namespace miplus

@@ -11,6 +11,11 @@
 using ::testing::_;
 using ::testing::Return;
 
+using namespace miplus::network;
+using miplus::testing::network::PacketTest;
+using miplus::testing::network::NetworkTypeHandlerMock;
+using miplus::testing::network::NetworkTypeHandlerMockProxy;
+
 class HandshakePacketTest : public PacketTest
 {
  protected:

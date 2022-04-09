@@ -12,6 +12,11 @@
 using ::testing::_;
 using ::testing::Return;
 
+using namespace miplus::network;
+using miplus::testing::network::NetworkTypeTest;
+using miplus::testing::network::NetworkTypeHandlerMock;
+using miplus::testing::network::NetworkTypeHandlerMockProxy;
+
 class VarStringTest : public NetworkTypeTest
 {
  protected:

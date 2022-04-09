@@ -3,6 +3,11 @@
 #include "ProtocolError.hh"
 #include "Session.hh"
 
+namespace miplus
+{
+namespace network
+{
+
 void HandshakeProtocol::inbound(std::istream &is)
 {
   int32_t opcode = VarNumberHandler::read<std::int32_t>(is);
@@ -24,3 +29,6 @@ void HandshakeProtocol::handle(const HandshakePacket &packet)
 {
   session.set_state(packet.get_requested_state());
 }
+
+}  // namespace network
+}  // namespace miplus

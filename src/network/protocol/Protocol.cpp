@@ -2,4 +2,15 @@
 
 #include "Session.hh"
 
-void Protocol::on_error(const boost::system::error_code& error) { session.terminate(); }
+namespace miplus
+{
+namespace network
+{
+
+void Protocol::on_error(const boost::system::error_code& error)
+{
+  session.terminate();
+}
+
+}  // namespace network
+}  // namespace miplus

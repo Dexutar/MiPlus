@@ -4,6 +4,13 @@
 
 #include <sstream>
 
+namespace miplus
+{
+namespace testing
+{
+namespace network
+{
+
 class NetworkTypeTest : public ::testing::Test
 {
  protected:
@@ -34,3 +41,7 @@ class NetworkTypeTest : public ::testing::Test
 
   std::stringstream stream;
 };
+
+}  // namespace network
+}  // namespace testing
+}  // namespace miplus

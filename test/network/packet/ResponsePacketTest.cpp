@@ -12,6 +12,11 @@
 using ::testing::_;
 using ::testing::Invoke;
 
+using namespace miplus::network;
+using miplus::testing::network::PacketTest;
+using miplus::testing::network::NetworkTypeHandlerMock;
+using miplus::testing::network::NetworkTypeHandlerMockProxy;
+
 class ResponsePacketTest : public PacketTest
 {
  protected:

@@ -4,6 +4,13 @@
 
 #include <concepts>
 
+namespace miplus
+{
+namespace testing
+{
+namespace network
+{
+
 template <typename Value>
 class NetworkTypeHandlerMock
 {
@@ -19,7 +26,17 @@ struct NetworkTypeHandlerMockProxy
   inline static NetworkTypeHandlerMock<Value> *mock;
 
   template <typename>
-  static Value read(std::istream &is) { return mock->read(is); }
+  static Value read(std::istream &is)
+  {
+    return mock->read(is);
+  }
 
-  static void write(std::ostream &os, Value value) { mock->write(os, value); }
+  static void write(std::ostream &os, Value value)
+  {
+    mock->write(os, value);
+  }
 };
+
+}  // namespace network
+}  // namespace testing
+}  // namespace miplus

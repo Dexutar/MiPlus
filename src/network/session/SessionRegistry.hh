@@ -5,6 +5,11 @@
 
 #include "Session.hh"
 
+namespace miplus
+{
+namespace network
+{
+
 class SessionRegistry
 {
  public:
@@ -21,3 +26,6 @@ class SessionRegistry
   std::mutex sessions_mutex;
   std::unordered_map<std::string, Session> sessions;
 };
+
+}  // namespace network
+}  // namespace miplus

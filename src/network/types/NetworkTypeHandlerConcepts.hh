@@ -3,6 +3,11 @@
 #include <concepts>
 #include <iterator>
 
+namespace miplus
+{
+namespace network
+{
+
 template<typename T, typename Value>
 concept NetworkTypeReader = requires(std::istream &is)
 {
@@ -26,3 +31,6 @@ concept NetworkTypeWriter = requires(std::ostream &os, Value value)
     T::write(os, value)
   } -> std::same_as<void>;
 };
+
+}  // namespace network
+}  // namespace miplus

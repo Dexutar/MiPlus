@@ -4,6 +4,11 @@ namespace io = boost::asio;
 using tcp = io::ip::tcp;
 using error_code = boost::system::error_code;
 
+namespace miplus
+{
+namespace network
+{
+
 Bootstrap::Bootstrap(std::uint16_t port, SessionRegistry &sessions)
     : boss{2},
       worker{4},
@@ -39,3 +44,6 @@ void Bootstrap::accept()
     accept();
   });
 }
+
+}
+}  // namespace miplus

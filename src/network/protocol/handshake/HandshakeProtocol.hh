@@ -3,6 +3,11 @@
 #include "HandshakePacket.hh"
 #include "Protocol.hh"
 
+namespace miplus
+{
+namespace network
+{
+
 class HandshakeProtocol : public Protocol
 {
  public:
@@ -13,3 +18,6 @@ class HandshakeProtocol : public Protocol
  private:
   void handle(const HandshakePacket &packet);
 };
+
+}  // namespace network
+}  // namespace miplus

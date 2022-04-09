@@ -5,6 +5,11 @@
 #include "NetworkTypeHandlerConcepts.hh"
 #include "VarNumberHandler.hh"
 
+namespace miplus
+{
+namespace network
+{
+
 struct VarStringHandler
 {
   template <typename, NetworkTypeReader<std::int32_t> SizeReader = VarNumberHandler>
@@ -29,3 +34,6 @@ void VarStringHandler::write(std::ostream &os, std::string_view string)
   SizeWriter::write(os, string.size());
   os << string;
 }
+
+}  // namespace network
+}  // namespace miplus

@@ -3,6 +3,11 @@
 #include "PingPacket.hh"
 #include "Protocol.hh"
 
+namespace miplus
+{
+namespace network
+{
+
 class StatusProtocol : public Protocol
 {
  public:
@@ -16,3 +21,6 @@ class StatusProtocol : public Protocol
 
   bool handled;
 };
+
+}  // namespace network
+}  // namespace miplus

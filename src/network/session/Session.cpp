@@ -6,6 +6,11 @@
 namespace io = boost::asio;
 using tcp = io::ip::tcp;
 
+namespace miplus
+{
+namespace network
+{
+
 Session::Session(tcp::socket &&socket, io::io_context &io_context, SessionRegistry &session_registry)
     : channel{std::make_shared<Channel>(std::move(socket), io_context, std::move(ProtocolFactory::create(ConnectionState::Handshake, *this)))},
       session_registry{session_registry}
@@ -13,7 +18,10 @@ Session::Session(tcp::socket &&socket, io::io_context &io_context, SessionRegist
   channel->start();
 }
 
-std::string Session::getID() const { return channel->get_remote_address(); }
+std::string Session::getID() const
+{
+  return channel->get_remote_address();
+}
 
 void Session::set_state(ConnectionState state)
 {
@@ -25,3 +33,6 @@ void Session::terminate()
   channel->close();
   session_registry.erase(getID());
 }
+
+}  // namespace network
+}  // namespace miplus

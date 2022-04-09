@@ -10,6 +10,11 @@ namespace io = boost::asio;
 
 using error_code = boost::system::error_code;
 
+namespace miplus
+{
+namespace network
+{
+
 Channel::Channel(boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, std::unique_ptr<Protocol> &&protocol)
     : active{true},
       socket{std::move(socket)},
@@ -127,3 +132,6 @@ std::pair<Channel::MatchCondition::iterator, bool> Channel::MatchCondition::oper
   packet_length = value;
   return {it, valid};
 }
+
+}  // namespace network
+}  // namespace miplus

@@ -4,6 +4,11 @@
 #include <thread>
 #include <vector>
 
+namespace miplus
+{
+namespace network
+{
+
 class EventLoop
 {
  public:
@@ -20,3 +25,6 @@ class EventLoop
 
   std::vector<std::thread> threads;
 };
+
+}  // namespace network
+}  // namespace miplus

@@ -3,6 +3,11 @@
 #include "Bootstrap.hh"
 #include "SessionRegistry.hh"
 
+namespace miplus
+{
+namespace network
+{
+
 class ConnectionManager
 {
  public:
@@ -12,3 +17,6 @@ class ConnectionManager
   Bootstrap bootstrap;
   SessionRegistry sessions;
 };
+
+}  // namespace network
+}  // namespace miplus

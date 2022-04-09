@@ -6,6 +6,11 @@
 #include "ResponsePacket.hh"
 #include "Session.hh"
 
+namespace miplus
+{
+namespace network
+{
+
 void StatusProtocol::inbound(std::istream &is)
 {
   int32_t opcode = VarNumberHandler::read<std::int32_t>(is);
@@ -46,3 +51,6 @@ void StatusProtocol::handle(const PingPacket &packet) const
   session.send(pong);
   session.terminate();
 }
+
+}  // namespace network
+}  // namespace miplus

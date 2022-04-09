@@ -6,6 +6,9 @@
 #include "RawTypeHandler.hh"
 #include "NetworkTypeTest.hh"
 
+using namespace miplus::network;
+using miplus::testing::network::NetworkTypeTest;
+
 class RawTypeTest : public NetworkTypeTest
 {
 };
