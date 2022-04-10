@@ -2,6 +2,7 @@
 
 #include <chrono>
 
+#include "MatchConditions.hh"
 #include "Packet.hh"
 #include "ProtocolError.hh"
 #include "VarNumberHandler.hh"
@@ -52,7 +53,7 @@ void Channel::close()
 void Channel::read_header()
 {
   input_deadline.expires_after(std::chrono::seconds(30));
-  io::async_read_until(socket, in_buffer, MatchCondition(packet_length), [&, self = shared_from_this()](const auto &error, std::size_t bytes_transferred)
+  io::async_read_until(socket, in_buffer, PacketLengthReader(packet_length), [&, self = shared_from_this()](const auto &error, std::size_t bytes_transferred)
   {
     if (active)
     {
@@ -124,13 +125,6 @@ void Channel::check_timeout()
         check_timeout();
     }
   });
-}
-
-std::pair<Channel::MatchCondition::iterator, bool> Channel::MatchCondition::operator()(iterator begin, iterator end)
-{
-  auto [valid, it, value] = VarNumberHandler::read<iterator, std::int32_t>(begin, end);
-  packet_length = value;
-  return {it, valid};
 }
 
 }  // namespace network
