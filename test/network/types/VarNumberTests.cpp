@@ -156,7 +156,7 @@ TEST_F(VarIntTest, ReadsOverflow)
   auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
-  EXPECT_THROW(([=]{VarNumberHandler::read<decltype(begin), std::int32_t>(begin, end);}()), std::length_error);
+  EXPECT_THROW((VarNumberHandler::read<decltype(begin), std::int32_t>(begin, end)), std::length_error);
 }
 
 TEST_F(VarIntTest, ReadsStatic)
@@ -400,7 +400,7 @@ TEST_F(VarLongTest, ReadsOverflow)
   auto begin = std::istreambuf_iterator<char>(stream);
   auto end = std::istreambuf_iterator<char>();
 
-  EXPECT_THROW(([=]{VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);}()), std::length_error);
+  EXPECT_THROW((VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end)), std::length_error);
 }
 
 TEST_F(VarLongTest, ReadsStatic)
