@@ -12,8 +12,8 @@ namespace network
 
 struct VarNumberHandler
 {
-  template <std::input_iterator iterator, std::integral number>
-  static std::tuple<bool, iterator, number> read(iterator begin, iterator end);
+  template <std::input_iterator Iterator, std::integral number>
+  static std::tuple<bool, Iterator, number> read(Iterator begin, Iterator end);
 
   template <std::integral number>
   static number read(std::istream &is);
@@ -22,14 +22,14 @@ struct VarNumberHandler
   static void write(std::ostream &os, number value);
 };
 
-template <std::input_iterator iterator, std::integral number>
-std::tuple<bool, iterator, number> VarNumberHandler::read(iterator begin, iterator end)
+template <std::input_iterator Iterator, std::integral number>
+std::tuple<bool, Iterator, number> VarNumberHandler::read(Iterator begin, Iterator end)
 {
   number result = 0;
   std::uint8_t index = 0;
   std::uint8_t read = 0;
 
-  iterator it = begin;
+  Iterator it = begin;
 
   constexpr std::uint8_t max_index = std::ceil((std::numeric_limits<number>::digits + std::numeric_limits<number>::is_signed) / 7.0);
 

@@ -2,6 +2,7 @@
 
 #include <concepts>
 #include <iterator>
+#include <tuple>
 
 namespace miplus
 {
@@ -16,12 +17,12 @@ concept NetworkTypeReader = requires(std::istream &is)
   } -> std::same_as<Value>;
 };
 
-template<typename T, typename iterator, typename Value>
-concept NetworkTypeIteratorReader = std::input_iterator<iterator> and requires(iterator begin, iterator end)
+template<typename T, typename Iterator, typename Value>
+concept NetworkTypeIteratorReader = std::input_iterator<Iterator> and requires(Iterator begin, Iterator end)
 {
   {
-    T::template read<Value>(begin, end)
-  } -> std::same_as<Value>;
+    T::template read<Iterator, Value>(begin, end)
+  } -> std::same_as<std::tuple<bool, Iterator, Value>>;
 };
 
 template<typename T, typename Value>
