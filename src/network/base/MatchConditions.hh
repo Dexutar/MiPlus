@@ -2,6 +2,8 @@
 
 #include <boost/asio.hpp>
 
+#include <iterator>
+
 #include "NetworkTypeHandlerConcepts.hh"
 #include "VarNumberHandler.hh"
 
@@ -10,10 +12,9 @@ namespace miplus
 namespace network
 {
 
+template <std::input_iterator Iterator = boost::asio::buffers_iterator<boost::asio::streambuf::const_buffers_type>>
 struct PacketLengthReader
 {
-  using Iterator = boost::asio::buffers_iterator<boost::asio::streambuf::const_buffers_type>;
-
   PacketLengthReader(std::size_t &packet_length) : packet_length{packet_length} {}
   PacketLengthReader(const PacketLengthReader &packet_length_reader) : packet_length{packet_length_reader.packet_length} {}
 
@@ -35,7 +36,7 @@ namespace boost::asio
 {
 
 template <>
-struct is_match_condition<miplus::network::PacketLengthReader> : public boost::true_type
+struct is_match_condition<miplus::network::PacketLengthReader<>> : public boost::true_type
 {
 };
 
