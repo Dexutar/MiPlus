@@ -2,7 +2,8 @@
 
 #include <gmock/gmock.h>
 
-#include <concepts>
+#include <istream>
+#include <ostream>
 
 namespace miplus
 {
