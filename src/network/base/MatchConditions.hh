@@ -3,6 +3,7 @@
 #include <boost/asio.hpp>
 
 #include <iterator>
+#include <stdexcept>
 
 #include "NetworkTypeHandlerConcepts.hh"
 #include "VarNumberHandler.hh"
@@ -22,17 +23,30 @@ struct PacketLengthReader
   template <NetworkTypeIteratorReader<Iterator, std::int32_t> PacketLengthReader = VarNumberHandler>
   std::pair<Iterator, bool> operator()(Iterator begin, Iterator end)
   {
-    try
+    std::uint8_t index = 0;
+    Iterator it = begin;
+
+    while (it != end) 
     {
-      auto [valid, it, value] = PacketLengthReader::template read<Iterator, std::int32_t>(begin, end);
-      packet_length = value;
-      return {it, valid};
+      if (index < 3)
+      {
+        std::int8_t read = *(it++);
+      
+        if (read > 0)
+        {
+          auto [consumed, value] = PacketLengthReader::template read<Iterator, std::int32_t>(begin, it);
+          
+          packet_length = value;
+          return {consumed, true};
+        }
+      }
+      else
+        throw std::length_error("Packet with length wider than 21-bit");
+      
+      ++index;
     }
-    catch(const std::overflow_error& error)
-    {
-      packet_length = Packet::max_packet_length + 1;
-      return {end, true};
-    }
+
+    return {begin, false};
   }
 
   std::size_t &packet_length;

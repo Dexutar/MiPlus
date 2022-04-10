@@ -60,14 +60,7 @@ void Channel::read_header()
       if (not error)
       {
         in_buffer.consume(bytes_transferred);
-
-        if (packet_length > Packet::max_packet_length)
-        {
-          std::cerr << "Received packet with length wider than 21-bit" << std::endl;
-          protocol->on_error(protocol_error::packet_length_overflow);
-        }
-        else
-          read_packet();
+        read_packet();
       }
       else
       {

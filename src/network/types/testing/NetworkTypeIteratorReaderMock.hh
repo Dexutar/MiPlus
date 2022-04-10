@@ -30,6 +30,6 @@ struct NetworkTypeIteratorReaderMockProxy
   }
 };
 
-}
-}
-}
+}  // namespace network
+}  // namespace testing
+}  // namespace miplus

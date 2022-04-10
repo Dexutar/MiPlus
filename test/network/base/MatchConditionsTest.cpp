@@ -5,15 +5,15 @@
 
 #include <iterator>
 #include <stdexcept>
-#include <tuple>
+#include <utility>
 
 #include "MatchConditions.hh"
 #include "NetworkTypeIteratorReaderMock.hh"
 #include "Packet.hh"
 
 using ::testing::_;
+using ::testing::Exactly;
 using ::testing::Return;
-using ::testing::Throw;
 
 using namespace miplus::network;
 using miplus::testing::network::MatchConditionTest;
@@ -36,7 +36,7 @@ TEST_F(PacketLengthReaderTest, ReadsEmpty)
   auto begin = Iterator(stream);
   auto end = Iterator();
 
-  EXPECT_CALL(mock, read(begin,end)).WillOnce(Return(std::make_tuple(false, begin, -1)));
+  EXPECT_CALL(mock, read(begin,end)).Times(Exactly(0));
 
   PacketLengthReader<Iterator> packet_length_reader{packet_length};
   auto [it, match_found] = packet_length_reader.operator()<NetworkTypeIteratorReaderMockProxy<Iterator, std::int32_t>>(begin,end);
@@ -47,36 +47,54 @@ TEST_F(PacketLengthReaderTest, ReadsEmpty)
 
 TEST_F(PacketLengthReaderTest, ReadsLength)
 {
+  writeBytes(0x7f, 1);
+
   NetworkTypeIteratorReaderMock<Iterator, std::int32_t> mock;
   NetworkTypeIteratorReaderMockProxy<Iterator, std::int32_t>::mock = &mock;
 
   auto begin = Iterator(stream);
   auto end = Iterator();
 
-  EXPECT_CALL(mock, read(begin,end)).WillOnce(Return(std::make_tuple(true, ++begin, 10)));
-
-  PacketLengthReader<Iterator> packet_length_reader{packet_length};
-  auto [it, match_found] = packet_length_reader.operator()<NetworkTypeIteratorReaderMockProxy<Iterator, std::int32_t>>(begin,end);
-
-  EXPECT_TRUE(match_found);
-  EXPECT_EQ(++begin, it);
-  EXPECT_EQ(10, packet_length);
-}
-
-TEST_F(PacketLengthReaderTest, ReadsOverflow)
-{
-  NetworkTypeIteratorReaderMock<Iterator, std::int32_t> mock;
-  NetworkTypeIteratorReaderMockProxy<Iterator, std::int32_t>::mock = &mock;
-
-  auto begin = Iterator(stream);
-  auto end = Iterator();
-
-  EXPECT_CALL(mock, read(begin,end)).WillOnce(Throw(std::overflow_error("")));
+  EXPECT_CALL(mock, read(begin,end)).WillOnce(Return(std::make_pair(end, 127)));
 
   PacketLengthReader<Iterator> packet_length_reader{packet_length};
   auto [it, match_found] = packet_length_reader.operator()<NetworkTypeIteratorReaderMockProxy<Iterator, std::int32_t>>(begin,end);
 
   EXPECT_TRUE(match_found);
   EXPECT_EQ(end, it);
-  EXPECT_GT(packet_length, Packet::max_packet_length);
+  EXPECT_EQ(127, packet_length);
+}
+
+TEST_F(PacketLengthReaderTest, ThrowsReadingWiderPacket)
+{
+  writeBytes(0xff, 3);
+  writeBytes(0x7f, 1);
+
+  NetworkTypeIteratorReaderMock<Iterator, std::int32_t> mock;
+  NetworkTypeIteratorReaderMockProxy<Iterator, std::int32_t>::mock = &mock;
+
+  auto begin = Iterator(stream);
+  auto end = Iterator();
+
+  EXPECT_CALL(mock, read(begin,end)).Times(Exactly(0));
+
+  PacketLengthReader<Iterator> packet_length_reader{packet_length};
+  EXPECT_THROW((packet_length_reader.operator()<NetworkTypeIteratorReaderMockProxy<Iterator, std::int32_t>>(begin,end)), std::length_error);
+}
+
+TEST_F(PacketLengthReaderTest, ThrowsReadingInvalidPacket)
+{
+  writeBytes(0xff, 3);
+  writeBytes(0x7f, 1);
+
+  NetworkTypeIteratorReaderMock<Iterator, std::int32_t> mock;
+  NetworkTypeIteratorReaderMockProxy<Iterator, std::int32_t>::mock = &mock;
+
+  auto begin = Iterator(stream);
+  auto end = Iterator();
+
+  EXPECT_CALL(mock, read(begin,end)).Times(Exactly(0));
+
+  PacketLengthReader<Iterator> packet_length_reader{packet_length};
+  EXPECT_THROW((packet_length_reader.operator()<NetworkTypeIteratorReaderMockProxy<Iterator, std::int32_t>>(begin,end)), std::length_error);
 }
