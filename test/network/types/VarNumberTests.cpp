@@ -145,7 +145,7 @@ TEST_F(VarIntTest, ReadsValidIterator)
   EXPECT_EQ(127, value);
 }
 
-TEST_F(VarIntTest, ReadsMissing)
+TEST_F(VarIntTest, ReadsEmpty)
 {
   writeBytes(0xff, 1);
 
@@ -405,7 +405,7 @@ TEST_F(VarLongTest, ReadsValidIterator)
   EXPECT_EQ(127, value);
 }
 
-TEST_F(VarLongTest, ReadsMissing)
+TEST_F(VarLongTest, ReadsEmpty)
 {
   writeBytes(0xff, 1);
 
