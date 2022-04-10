@@ -6,6 +6,7 @@
 
 #include "NetworkTypeHandlerConcepts.hh"
 #include "VarNumberHandler.hh"
+#include "Packet.hh"
 
 namespace miplus
 {
@@ -21,9 +22,17 @@ struct PacketLengthReader
   template <NetworkTypeIteratorReader<Iterator, std::int32_t> PacketLengthReader = VarNumberHandler>
   std::pair<Iterator, bool> operator()(Iterator begin, Iterator end)
   {
-    auto [valid, it, value] = PacketLengthReader::template read<Iterator, std::int32_t>(begin, end);
-    packet_length = value;
-    return {it, valid};
+    try
+    {
+      auto [valid, it, value] = PacketLengthReader::template read<Iterator, std::int32_t>(begin, end);
+      packet_length = value;
+      return {it, valid};
+    }
+    catch(const std::overflow_error& error)
+    {
+      packet_length = Packet::max_packet_length + 1;
+      return {end, true};
+    }
   }
 
   std::size_t &packet_length;
