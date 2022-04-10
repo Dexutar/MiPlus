@@ -13,11 +13,9 @@ namespace network
 {
 
 template <typename Value>
-class NetworkTypeHandlerMock
+struct NetworkTypeHandlerMock
 {
- public:
   MOCK_METHOD(Value, read, (std::istream & is));
-
   MOCK_METHOD(void, write, (std::ostream & os, Value value));
 };
 
