@@ -3,7 +3,6 @@
 #include <cmath>
 #include <iostream>
 #include <iterator>
-#include <tuple>
 
 namespace miplus
 {
@@ -13,7 +12,7 @@ namespace network
 struct VarNumberHandler
 {
   template <std::input_iterator Iterator, std::integral number>
-  static std::tuple<bool, Iterator, number> read(Iterator begin, Iterator end);
+  static std::pair<Iterator, number> read(Iterator begin, Iterator end);
 
   template <std::integral number>
   static number read(std::istream &is);
@@ -23,7 +22,7 @@ struct VarNumberHandler
 };
 
 template <std::input_iterator Iterator, std::integral number>
-std::tuple<bool, Iterator, number> VarNumberHandler::read(Iterator begin, Iterator end)
+std::pair<Iterator, number> VarNumberHandler::read(Iterator begin, Iterator end)
 {
   number result = 0;
   std::uint8_t index = 0;
@@ -36,20 +35,16 @@ std::tuple<bool, Iterator, number> VarNumberHandler::read(Iterator begin, Iterat
   do
   {
     if (it == end)
-    {
-      return {false, end, 0};
-    }
-
+      return {it, result};
+    
     read = *(it++);
     result |= static_cast<number>(read & 0x7F) << (7 * index++);
 
     if (index > max_index)
-    {
-      throw std::overflow_error("VarNumber is too big");
-    }
+      throw std::length_error("VarNumber is too big");
   } while (read & 0x80);
 
-  return {true, it, result};
+  return {it, result};
 }
 
 template <std::integral number>
@@ -58,7 +53,7 @@ number VarNumberHandler::read(std::istream &is)
   auto begin = std::istreambuf_iterator<char>(is);
   auto end = std::istreambuf_iterator<char>();
 
-  auto [valid, it, res] = VarNumberHandler::read<decltype(begin), number>(begin, end);
+  auto [it, res] = VarNumberHandler::read<decltype(begin), number>(begin, end);
   return res;
 }
 
