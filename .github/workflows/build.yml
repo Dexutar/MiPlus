@@ -34,7 +34,7 @@ jobs:
         lcov -c -i -d ${{github.workspace}} -o coverage.base
         lcov -d ${{github.workspace}} -c -o coverage.capture
         lcov -a coverage.base -a coverage.capture -o coverage.info
-        lcov -r coverage.info '/usr/include/*' '*/test/*' '*/testing/*' -o coverage.info
+        lcov -r coverage.info '/usr/include/*' '*/test/*' '*/mocks/*' -o coverage.info
       working-directory: ${{github.workspace}}
 
     - name: Upload coverage to Codecov

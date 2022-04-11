@@ -1,5 +1,0 @@
-target_include_directories(network PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-
-# Sub directories
-add_subdirectory(handshake)
-add_subdirectory(status)
