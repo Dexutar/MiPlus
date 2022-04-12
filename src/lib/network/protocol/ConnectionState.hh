@@ -8,9 +8,9 @@ namespace network
 enum class ConnectionState : std::int8_t
 {
   Handshake = -1,
-  Play,
-  Status,
-  Login
+  Play      = 0,
+  Status    = 1,
+  Login     = 2
 };
 
 }  // namespace network
