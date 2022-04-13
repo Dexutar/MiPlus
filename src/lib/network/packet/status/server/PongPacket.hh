@@ -13,9 +13,8 @@ namespace miplus
 namespace network
 {
 
-class PongPacket : public Packet
+struct PongPacket : public Packet
 {
- public:
   static constexpr std::uint8_t opcode = 1;
 
   PongPacket(std::int64_t payload) : payload{payload} {}
@@ -34,7 +33,6 @@ class PongPacket : public Packet
     return packet.write_header<SizeWriter>(os, data);
   }
 
- private:
   std::int64_t payload;
 };
 

@@ -12,9 +12,8 @@ namespace miplus
 namespace network
 {
 
-class PingPacket : public Packet
+struct PingPacket : public Packet
 {
- public:
   static constexpr std::uint8_t opcode = 1;
 
   template <NetworkTypeReader<std::int64_t> PayloadReader = RawTypeHandler>
@@ -24,12 +23,6 @@ class PingPacket : public Packet
     return is;
   }
 
-  std::int64_t get_payload() const
-  {
-    return payload;
-  }
-
- private:
   std::int64_t payload;
 };
 

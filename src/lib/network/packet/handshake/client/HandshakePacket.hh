@@ -16,9 +16,8 @@ namespace miplus
 namespace network
 {
 
-class HandshakePacket : Packet
+struct HandshakePacket : Packet
 {
- public:
   static constexpr std::uint8_t opcode = 0;
 
   template <NetworkTypeReader<std::int32_t>  VersionReader = VarNumberHandler, 
@@ -35,12 +34,6 @@ class HandshakePacket : Packet
     return is;
   }
 
-  ConnectionState get_requested_state() const
-  {
-    return requested_state;
-  }
-
- private:
   int version;
   std::string server_address;
   std::uint16_t server_port;

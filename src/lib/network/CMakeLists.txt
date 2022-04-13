@@ -17,6 +17,7 @@ target_link_libraries(network_lib PRIVATE ${PRIVATE_LIBRARIES})
 
 # Sub directories
 add_subdirectory(base)
+add_subdirectory(channel)
 add_subdirectory(error)
 add_subdirectory(packet)
 add_subdirectory(protocol)

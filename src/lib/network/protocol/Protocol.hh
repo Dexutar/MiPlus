@@ -1,26 +1,18 @@
 #pragma once
 
-#include <boost/system/error_code.hpp>
-#include <iostream>
+#include <variant>
+
+#include "HandshakeProtocol.hh"
+#include "LoginProtocol.hh"
+#include "PlayProtocol.hh"
+#include "StatusProtocol.hh"
 
 namespace miplus
 {
 namespace network
 {
 
-class Session;
-
-class Protocol
-{
- public:
-  Protocol(Session &session) : session{session} {}
-
-  virtual void inbound(std::istream &is) = 0;
-  virtual void on_error(const boost::system::error_code &error);
-
- protected:
-  Session &session;
-};
+using Protocol = std::variant<HandshakeProtocol, LoginProtocol, PlayProtocol, StatusProtocol>;
 
 }  // namespace network
 }  // namespace miplus

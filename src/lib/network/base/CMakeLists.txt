@@ -1,6 +1,5 @@
 # Sources
 SET(NETWORK_BASE_SOURCES  Bootstrap.cpp
-                          Channel.cpp
                           EventLoop.cpp
 )
 

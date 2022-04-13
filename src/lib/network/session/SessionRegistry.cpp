@@ -5,10 +5,10 @@ namespace miplus
 namespace network
 {
 
-void SessionRegistry::erase(const std::string &key)
+void SessionRegistry::erase(std::size_t id)
 {
   std::lock_guard<std::mutex> lck(sessions_mutex);
-  sessions.erase(key);
+  sessions.erase(id);
 }
 
 }  // namespace network

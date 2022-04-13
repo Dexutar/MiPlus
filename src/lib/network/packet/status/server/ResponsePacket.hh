@@ -14,9 +14,8 @@ namespace miplus
 namespace network
 {
 
-class ResponsePacket : public Packet
+struct ResponsePacket : public Packet
 {
- public:
   static constexpr std::uint8_t opcode = 0;
 
   ResponsePacket(std::string_view response) : response{response} {}
@@ -35,7 +34,6 @@ class ResponsePacket : public Packet
     return packet.write_header<SizeWriter>(os, data);
   }
 
- private:
   std::string_view response;
 };
 

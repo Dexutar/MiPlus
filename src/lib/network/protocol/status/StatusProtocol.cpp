@@ -11,6 +11,8 @@ namespace miplus
 namespace network
 {
 
+StatusProtocol::StatusProtocol(Session *session) : session(session), handled(false) {}
+
 void StatusProtocol::inbound(std::istream &is)
 {
   int32_t opcode = VarNumberHandler::read<std::int32_t>(is);
@@ -20,7 +22,7 @@ void StatusProtocol::inbound(std::istream &is)
     if (not handled)
       handle();
     else
-      session.terminate();
+      session->terminate();
   }
   else if (opcode == PingPacket::opcode)
   {
@@ -42,14 +44,19 @@ void StatusProtocol::handle()
   ResponsePacket response{
       "{\"version\":{\"protocol\":340,\"name\":\"1.12.2\"},\"description\":{\"text\":\"OwO\"},"
       "\"players\":{\"max\":0,\"online\":0}}"};
-  session.send(response);
+  session->send(response);
 }
 
 void StatusProtocol::handle(const PingPacket &packet) const
 {
-  PongPacket pong{packet.get_payload()};
-  session.send(pong);
-  session.terminate();
+  PongPacket pong{packet.payload};
+  session->send(pong);
+  session->terminate();
+}
+
+void StatusProtocol::on_error(const boost::system::error_code &error)
+{
+  session->terminate();
 }
 
 }  // namespace network

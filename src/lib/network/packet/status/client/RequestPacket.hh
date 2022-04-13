@@ -10,9 +10,8 @@ namespace miplus
 namespace network
 {
 
-class RequestPacket : public Packet
+struct RequestPacket : public Packet
 {
- public:
   static constexpr std::uint8_t opcode = 0;
 };
 

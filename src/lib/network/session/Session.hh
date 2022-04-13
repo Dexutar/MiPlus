@@ -6,20 +6,19 @@
 #include "Channel.hh"
 #include "ConnectionState.hh"
 #include "Packet.hh"
+#include "Session_forwarding.hh"
 
 namespace miplus
 {
 namespace network
 {
 
-class SessionRegistry;
-
 class Session
 {
  public:
-  Session(boost::asio::ip::tcp::socket &&socket, boost::asio::io_context &io_context, SessionRegistry &session_registry);
+  Session(std::size_t id, boost::asio::ip::tcp::socket socket, boost::asio::io_context &io_context, SessionRegistry &session_registry);
 
-  std::string getID() const;
+  std::size_t get_id() const;
 
   void set_state(ConnectionState state);
 
@@ -29,8 +28,10 @@ class Session
   void terminate();
 
  private:
-  std::shared_ptr<Channel> channel;
+  std::size_t     id;
   SessionRegistry &session_registry;
+
+  std::shared_ptr<Channel> channel;
 };
 
 template <typename Packet>

@@ -1,9 +1,11 @@
 #pragma once
 
-#include <memory>
+#include <variant>
 
 #include "ConnectionState.hh"
 #include "HandshakeProtocol.hh"
+#include "LoginProtocol.hh"
+#include "PlayProtocol.hh"
 #include "Protocol.hh"
 #include "Session.hh"
 #include "StatusProtocol.hh"
@@ -16,16 +18,19 @@ namespace network
 class ProtocolFactory
 {
  public:
-  static std::unique_ptr<Protocol> create(ConnectionState state, Session &session)
+  static Protocol create(ConnectionState state, Session &session)
   {
     switch (state)
     {
       case ConnectionState::Handshake:
-        return std::make_unique<HandshakeProtocol>(session);
+        return HandshakeProtocol(&session);
+      case ConnectionState::Play:
+        return PlayProtocol(&session);
       case ConnectionState::Status:
-        return std::make_unique<StatusProtocol>(session);
+        return StatusProtocol(&session);
+      case ConnectionState::Login:
+        return LoginProtocol(&session);
     }
-    return std::unique_ptr<Protocol>{};
   }
 };
 

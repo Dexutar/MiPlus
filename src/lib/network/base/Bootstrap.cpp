@@ -38,9 +38,9 @@ void Bootstrap::accept()
   {
     if (not error)
     {
-      std::string id = socket->remote_endpoint().address().to_string() + ":" + std::to_string(socket->remote_endpoint().port());
-      sessions.emplace(std::move(id), std::move(*socket), worker.get_context());
+      sessions.add(std::move(*socket), worker.get_context());
     }
+
     accept();
   });
 }
