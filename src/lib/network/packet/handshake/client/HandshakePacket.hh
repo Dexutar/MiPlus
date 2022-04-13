@@ -29,7 +29,7 @@ struct HandshakePacket : Packet
     packet.version = VersionReader::template read<std::int32_t>(is);
     packet.server_address = AddressReader::template read<std::string>(is);
     packet.server_port = PortReader::template read<std::uint16_t>(is);
-    packet.requested_state = static_cast<ConnectionState>(StateReader::template read<std::int32_t>(is));
+    packet.requested_state = get_state_from_id(StateReader::template read<std::int32_t>(is));
 
     return is;
   }
@@ -37,7 +37,7 @@ struct HandshakePacket : Packet
   int version;
   std::string server_address;
   std::uint16_t server_port;
-  ConnectionState requested_state;
+  ConnectionState requested_state; 
 };
 
 }  // namespace network

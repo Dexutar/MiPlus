@@ -1,6 +1,7 @@
 #pragma once
 
 #include <variant>
+#include <stdexcept>
 
 #include "ConnectionState.hh"
 #include "HandshakeProtocol.hh"
@@ -30,6 +31,8 @@ class ProtocolFactory
         return StatusProtocol(&session);
       case ConnectionState::Login:
         return LoginProtocol(&session);
+      default:
+        throw std::invalid_argument("Invalid state requested");
     }
   }
 };
