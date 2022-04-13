@@ -32,7 +32,7 @@ void Channel::start()
   active = true;
 
   read_frame();
-  //handle_timeout();
+  handle_timeout();
 }
 
 void Channel::stop()
