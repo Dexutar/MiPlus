@@ -12,7 +12,7 @@ namespace miplus
 namespace network
 {
 
-using Protocol = std::variant<HandshakeProtocol, LoginProtocol, PlayProtocol, StatusProtocol>;
+using Protocol = std::variant<HandshakeProtocol, PlayProtocol, StatusProtocol, LoginProtocol>;
 
 }  // namespace network
 }  // namespace miplus

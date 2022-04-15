@@ -19,18 +19,18 @@ namespace network
 class ProtocolFactory
 {
  public:
-  static Protocol create(ConnectionState state, Session &session)
+  static Protocol create(ConnectionState state, Session *session)
   {
     switch (state)
     {
       case ConnectionState::Handshake:
-        return HandshakeProtocol(&session);
+        return HandshakeProtocol(session);
       case ConnectionState::Play:
-        return PlayProtocol(&session);
+        return PlayProtocol(session);
       case ConnectionState::Status:
-        return StatusProtocol(&session);
+        return StatusProtocol(session);
       case ConnectionState::Login:
-        return LoginProtocol(&session);
+        return LoginProtocol(session);
       default:
         throw std::invalid_argument("Invalid state requested");
     }

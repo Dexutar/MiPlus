@@ -1,5 +1,7 @@
 # Sources
-SET(PROTOCOL_TEST_SOURCES ConnectionStateTest.cpp)
+SET(PROTOCOL_TEST_SOURCES ConnectionStateTest.cpp
+                          ProtocolFactoryTest.cpp
+)
 
 
 # Dependencies
