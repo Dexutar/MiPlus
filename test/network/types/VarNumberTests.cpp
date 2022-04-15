@@ -127,6 +127,21 @@ TEST_F(VarIntTest, ReadsOverflow)
   EXPECT_EQ(6, stream.tellg());
 }
 
+TEST_F(VarIntTest, ReadsMultiple)
+{
+  writeBytes(0xd4, 1);
+  writeBytes(0x02, 1);
+  writeBytes(0x09, 1);
+
+  std::int32_t value = VarNumberHandler::read<std::int32_t>(stream);
+  EXPECT_EQ(2, stream.tellg());
+  EXPECT_EQ(340, value);
+
+  value = VarNumberHandler::read<std::int32_t>(stream);
+  EXPECT_EQ(3, stream.tellg());
+  EXPECT_EQ(9, value);
+}
+
 
 class VarLongTest : public NetworkTypeTest
 {
@@ -313,6 +328,21 @@ TEST_F(VarLongTest, ReadsOverflow)
 
   EXPECT_THROW((VarNumberHandler::read<std::int64_t>(stream)), std::length_error);
   EXPECT_EQ(11, stream.tellg());
+}
+
+TEST_F(VarLongTest, ReadsMultiple)
+{
+  writeBytes(0xd4, 1);
+  writeBytes(0x02, 1);
+  writeBytes(0x09, 1);
+
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
+  EXPECT_EQ(2, stream.tellg());
+  EXPECT_EQ(340, value);
+
+  value = VarNumberHandler::read<std::int64_t>(stream);
+  EXPECT_EQ(3, stream.tellg());
+  EXPECT_EQ(9, value);
 }
 
 
