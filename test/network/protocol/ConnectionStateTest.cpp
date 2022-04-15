@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "ConnectionState.cpp"
+#include "ConnectionState.hh"
 
 using namespace miplus::network;
 
