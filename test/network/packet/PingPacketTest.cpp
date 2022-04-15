@@ -9,9 +9,9 @@ using ::testing::_;
 using ::testing::Return;
 
 using namespace miplus::network;
-using miplus::testing::network::PacketTest;
 using miplus::testing::network::NetworkTypeHandlerMock;
 using miplus::testing::network::NetworkTypeHandlerMockProxy;
+using miplus::testing::network::PacketTest;
 
 class PingPacketTest : public PacketTest
 {
@@ -27,8 +27,8 @@ TEST_F(PingPacketTest, ReadsPacket)
   EXPECT_CALL(mock, read(_)).WillOnce(Return(PAYLOAD));
 
   PingPacket packet;
-  operator>> <NetworkTypeHandlerMockProxy<std::int64_t>>
-  (stream, packet);
+  operator>><NetworkTypeHandlerMockProxy<std::int64_t>>
+            (stream, packet);
 
   EXPECT_EQ(PAYLOAD, packet.payload);
 }
