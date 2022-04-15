@@ -17,14 +17,6 @@ concept NetworkTypeReader = requires(std::istream &is)
   } -> std::same_as<Value>;
 };
 
-template<typename T, typename Iterator, typename Value>
-concept NetworkTypeIteratorReader = std::input_iterator<Iterator> and requires(Iterator begin, Iterator end)
-{
-  {
-    T::template read<Iterator, Value>(begin, end)
-  } -> std::same_as<std::pair<Iterator, Value>>;
-};
-
 template<typename T, typename Value>
 concept NetworkTypeWriter = requires(std::ostream &os, Value value)
 {

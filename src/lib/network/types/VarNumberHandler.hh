@@ -9,63 +9,64 @@ namespace miplus
 namespace network
 {
 
-struct VarNumberHandler
+class VarNumberHandler
 {
-  template <std::input_iterator Iterator, std::integral number>
-  static std::pair<Iterator, number> read(Iterator begin, Iterator end);
+ public:
+  template <std::integral Number>
+  static Number read(std::istream &is);
 
-  template <std::integral number>
-  static number read(std::istream &is);
+  template <std::integral Number>
+  static void write(std::ostream &os, Number value);
 
-  template <std::integral number>
-  static void write(std::ostream &os, number value);
+ private:
+  template <std::input_iterator Iterator, std::integral Number>
+  static Number read(Iterator begin, Iterator end);
 };
 
-template <std::input_iterator Iterator, std::integral number>
-std::pair<Iterator, number> VarNumberHandler::read(Iterator begin, Iterator end)
+template <std::input_iterator Iterator, std::integral Number>
+Number VarNumberHandler::read(Iterator begin, Iterator end)
 {
-  number result = 0;
+  Number result = 0;
   std::uint8_t index = 0;
   std::uint8_t read = 0;
 
   Iterator it = begin;
 
-  constexpr std::uint8_t max_index = std::ceil((std::numeric_limits<number>::digits + std::numeric_limits<number>::is_signed) / 7.0);
+  constexpr std::uint8_t max_index = std::ceil((std::numeric_limits<Number>::digits + std::numeric_limits<Number>::is_signed) / 7.0);
 
   do
   {
     if (it == end)
-      return {it, result};
+      return result;
     
     read = *(it++);
-    result |= static_cast<number>(read & 0x7F) << (7 * index++);
+    result |= static_cast<Number>(read & 0x7F) << (7 * index++);
 
     if (index > max_index)
       throw std::length_error("VarNumber is too big");
   } while (read & 0x80);
 
-  return {it, result};
+  return result;
 }
 
-template <std::integral number>
-number VarNumberHandler::read(std::istream &is)
+template <std::integral Number>
+Number VarNumberHandler::read(std::istream &is)
 {
   auto begin = std::istreambuf_iterator<char>(is);
   auto end = std::istreambuf_iterator<char>();
 
-  auto [it, res] = VarNumberHandler::read<decltype(begin), number>(begin, end);
-  return res;
+  return VarNumberHandler::read<decltype(begin), Number>(begin, end);
 }
 
-template <std::integral number>
-void VarNumberHandler::write(std::ostream &os, number value)
+template <std::integral Number>
+void VarNumberHandler::write(std::ostream &os, Number value)
 {
-  constexpr number mask = static_cast<number>(-1) ^ 0x7f;
+  constexpr Number mask = static_cast<Number>(-1) ^ 0x7f;
 
   while ((value & mask) != 0)
   {
     os << static_cast<std::uint8_t>(value & 0x7F | 0x80);
-    value = static_cast<std::make_unsigned<number>::type>(value) >> 7;
+    value = static_cast<std::make_unsigned<Number>::type>(value) >> 7;
   }
 
   os << static_cast<std::uint8_t>(value);

@@ -16,12 +16,9 @@ TEST_F(VarIntTest, ReadsZero)
 {
   writeBytes(0x00, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int32_t value = VarNumberHandler::read<std::int32_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int32_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(1, stream.tellg());
   EXPECT_EQ(0, value);
 }
 
@@ -29,12 +26,9 @@ TEST_F(VarIntTest, ReadsOneByte)
 {
   writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int32_t value = VarNumberHandler::read<std::int32_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int32_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(1, stream.tellg());
   EXPECT_EQ(127, value);
 }
 
@@ -43,12 +37,9 @@ TEST_F(VarIntTest, ReadsTwoBytes)
   writeBytes(0xff, 1);
   writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int32_t value = VarNumberHandler::read<std::int32_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int32_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(2, stream.tellg());
   EXPECT_EQ(16383, value);
 }
 
@@ -57,12 +48,9 @@ TEST_F(VarIntTest, ReadsThreeBytes)
   writeBytes(0xff, 2);
   writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int32_t value = VarNumberHandler::read<std::int32_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int32_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(3, stream.tellg());
   EXPECT_EQ(2097151, value);
 }
 
@@ -71,12 +59,9 @@ TEST_F(VarIntTest, ReadsFourBytes)
   writeBytes(0xff, 3);
   writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int32_t value = VarNumberHandler::read<std::int32_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int32_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(4, stream.tellg());
   EXPECT_EQ(268435455, value);
 }
 
@@ -85,12 +70,9 @@ TEST_F(VarIntTest, ReadsFiveBytes)
   writeBytes(0xff, 4);
   writeBytes(0x0f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int32_t value = VarNumberHandler::read<std::int32_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int32_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(5, stream.tellg());
   EXPECT_EQ(-1, value);
 }
 
@@ -99,12 +81,9 @@ TEST_F(VarIntTest, ReadsMaxInt)
   writeBytes(0xff, 4);
   writeBytes(0x07, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int32_t value = VarNumberHandler::read<std::int32_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int32_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(5, stream.tellg());
   EXPECT_EQ(std::numeric_limits<std::int32_t>::max(), value);
 }
 
@@ -113,39 +92,30 @@ TEST_F(VarIntTest, ReadsMinInt)
   writeBytes(0x80, 4);
   writeBytes(0x08, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int32_t value = VarNumberHandler::read<std::int32_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int32_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(5, stream.tellg());
   EXPECT_EQ(std::numeric_limits<std::int32_t>::lowest(), value);
 }
 
-TEST_F(VarIntTest, ReadsValidIterator)
+TEST_F(VarIntTest, ReadsPartialStream)
 {
   writeBytes(0x7f, 1);
   writeBytes(0xff, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int32_t value = VarNumberHandler::read<std::int32_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int32_t>(begin, end);
-
-  EXPECT_EQ(++begin, it);
+  EXPECT_EQ(1, stream.tellg());
   EXPECT_EQ(127, value);
 }
 
-TEST_F(VarIntTest, ReadsEmpty)
+TEST_F(VarIntTest, ReadsIncomplete)
 {
   writeBytes(0xff, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int32_t value = VarNumberHandler::read<std::int32_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int32_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(1, stream.tellg());
 }
 
 TEST_F(VarIntTest, ReadsOverflow)
@@ -153,18 +123,10 @@ TEST_F(VarIntTest, ReadsOverflow)
   writeBytes(0xff, 5);
   writeBytes(0x00, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
-
-  EXPECT_THROW((VarNumberHandler::read<decltype(begin), std::int32_t>(begin, end)), std::length_error);
+  EXPECT_THROW((VarNumberHandler::read<std::int32_t>(stream)), std::length_error);
+  EXPECT_EQ(6, stream.tellg());
 }
 
-TEST_F(VarIntTest, ReadsStatic)
-{
-  writeBytes(0x01, 1);
-
-  EXPECT_EQ(1, VarNumberHandler::read<std::int32_t>(stream));
-}
 
 class VarLongTest : public NetworkTypeTest
 {
@@ -174,12 +136,9 @@ TEST_F(VarLongTest, ReadsZero)
 {
   writeBytes(0x00, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(1, stream.tellg());
   EXPECT_EQ(0, value);
 }
 
@@ -187,12 +146,9 @@ TEST_F(VarLongTest, ReadsOneByte)
 {
   writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(1, stream.tellg());
   EXPECT_EQ(127, value);
 }
 
@@ -201,12 +157,9 @@ TEST_F(VarLongTest, ReadsTwoBytes)
   writeBytes(0xff, 1);
   writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(2, stream.tellg());
   EXPECT_EQ(16383, value);
 }
 
@@ -215,12 +168,9 @@ TEST_F(VarLongTest, ReadsThreeBytes)
   writeBytes(0xff, 2);
   writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(3, stream.tellg());
   EXPECT_EQ(2097151, value);
 }
 
@@ -229,12 +179,9 @@ TEST_F(VarLongTest, ReadsFourBytes)
   writeBytes(0xff, 3);
   writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(4, stream.tellg());
   EXPECT_EQ(268435455, value);
 }
 
@@ -243,12 +190,9 @@ TEST_F(VarLongTest, ReadsFiveBytes)
   writeBytes(0xff, 4);
   writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(5, stream.tellg());
   EXPECT_EQ(34359738367, value);
 }
 
@@ -257,12 +201,9 @@ TEST_F(VarLongTest, ReadsSixBytes)
   writeBytes(0xff, 5);
   writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(6, stream.tellg());
   EXPECT_EQ(4398046511103, value);
 }
 
@@ -271,12 +212,9 @@ TEST_F(VarLongTest, ReadsSevenBytes)
   writeBytes(0xff, 6);
   writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(7, stream.tellg());
   EXPECT_EQ(562949953421311, value);
 }
 
@@ -285,12 +223,9 @@ TEST_F(VarLongTest, ReadsEightBytes)
   writeBytes(0xff, 7);
   writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(8, stream.tellg());
   EXPECT_EQ(72057594037927935, value);
 }
 
@@ -299,12 +234,9 @@ TEST_F(VarLongTest, ReadsNineBytes)
   writeBytes(0xff, 8);
   writeBytes(0x7f, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(9, stream.tellg());
   EXPECT_EQ(std::numeric_limits<std::int64_t>::max(), value);
 }
 
@@ -313,12 +245,9 @@ TEST_F(VarLongTest, ReadsTenBytes)
   writeBytes(0xff, 9);
   writeBytes(0x01, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(10, stream.tellg());
   EXPECT_EQ(-1, value);
 }
 
@@ -327,12 +256,9 @@ TEST_F(VarLongTest, ReadsMaxInt)
   writeBytes(0xff, 4);
   writeBytes(0x07, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(5, stream.tellg());
   EXPECT_EQ(std::numeric_limits<std::int32_t>::max(), value);
 }
 
@@ -343,12 +269,9 @@ TEST_F(VarLongTest, ReadsMinInt)
   writeBytes(0xff, 4);
   writeBytes(0x01, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(10, stream.tellg());
   EXPECT_EQ(std::numeric_limits<std::int32_t>::lowest(), value);
 }
 
@@ -357,39 +280,30 @@ TEST_F(VarLongTest, ReadsMinLong)
   writeBytes(0x80, 9);
   writeBytes(0x01, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(10, stream.tellg());
   EXPECT_EQ(std::numeric_limits<std::int64_t>::lowest(), value);
 }
 
-TEST_F(VarLongTest, ReadsValidIterator)
+TEST_F(VarLongTest, ReadsPartialStream)
 {
   writeBytes(0x7f, 1);
   writeBytes(0xff, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);
-
-  EXPECT_EQ(++begin, it);
+  EXPECT_EQ(1, stream.tellg());
   EXPECT_EQ(127, value);
 }
 
-TEST_F(VarLongTest, ReadsEmpty)
+TEST_F(VarLongTest, ReadsIncomplete)
 {
   writeBytes(0xff, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
+  std::int64_t value = VarNumberHandler::read<std::int64_t>(stream);
 
-  auto [it, value] = VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end);
-
-  EXPECT_EQ(end, it);
+  EXPECT_EQ(1, stream.tellg());
 }
 
 TEST_F(VarLongTest, ReadsOverflow)
@@ -397,18 +311,10 @@ TEST_F(VarLongTest, ReadsOverflow)
   writeBytes(0xff, 10);
   writeBytes(0x00, 1);
 
-  auto begin = std::istreambuf_iterator<char>(stream);
-  auto end = std::istreambuf_iterator<char>();
-
-  EXPECT_THROW((VarNumberHandler::read<decltype(begin), std::int64_t>(begin, end)), std::length_error);
+  EXPECT_THROW((VarNumberHandler::read<std::int64_t>(stream)), std::length_error);
+  EXPECT_EQ(11, stream.tellg());
 }
 
-TEST_F(VarLongTest, ReadsStatic)
-{
-  writeBytes(0x7f, 1);
-
-  EXPECT_EQ(127, VarNumberHandler::read<std::int64_t>(stream));
-}
 
 class WriteVarNumberTest : public NetworkTypeTest
 {
