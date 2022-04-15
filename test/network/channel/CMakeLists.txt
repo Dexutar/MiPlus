@@ -11,11 +11,11 @@ SET(PRIVATE_LIBRARIES network_lib
 
 
 # Target
-add_executable(NetworkChannelTests ${CHANNEL_TEST_SOURCES})
+add_executable(ChannelTests ${CHANNEL_TEST_SOURCES})
 
-target_include_directories(NetworkChannelTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(NetworkChannelTests PRIVATE ${PRIVATE_LIBRARIES})
+target_include_directories(ChannelTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(ChannelTests PRIVATE ${PRIVATE_LIBRARIES})
 
 
 # Tests
-gtest_discover_tests(NetworkChannelTests)
+gtest_discover_tests(ChannelTests)
