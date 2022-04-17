@@ -5,6 +5,7 @@
 #include <string>
 
 #include "ConnectionState.hh"
+#include "ConnectionStateHandler.hh"
 #include "NetworkTypeHandlerConcepts.hh"
 #include "Packet.hh"
 #include "RawTypeHandler.hh"
@@ -20,16 +21,16 @@ struct HandshakePacket : Packet
 {
   static constexpr std::uint8_t opcode = 0;
 
-  template <NetworkTypeReader<std::int32_t>  VersionReader = VarNumberHandler, 
-            NetworkTypeReader<std::string>   AddressReader = VarStringHandler,
-            NetworkTypeReader<std::uint16_t> PortReader    = RawTypeHandler, 
-            NetworkTypeReader<std::int32_t>  StateReader   = VarNumberHandler>
+  template <NetworkTypeReader<std::int32_t>    VersionReader  = VarNumberHandler, 
+            NetworkTypeReader<std::string>     AddressReader  = VarStringHandler,
+            NetworkTypeReader<std::uint16_t>   PortReader     = RawTypeHandler, 
+            NetworkTypeReader<ConnectionState> StateReader    = ConnectionStateHandler>
   friend std::istream &operator>>(std::istream &is, HandshakePacket &packet)
   {
     packet.version = VersionReader::template read<std::int32_t>(is);
     packet.server_address = AddressReader::template read<std::string>(is);
     packet.server_port = PortReader::template read<std::uint16_t>(is);
-    packet.requested_state = get_state_from_id(StateReader::template read<std::int32_t>(is));
+    packet.requested_state = StateReader::template read<ConnectionState>(is);
 
     return is;
   }

@@ -16,7 +16,5 @@ enum ConnectionState : std::int8_t
   INVALID
 };
 
-ConnectionState get_state_from_id(std::int32_t id);
-
 }  // namespace network
 }  // namespace miplus

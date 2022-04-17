@@ -1,5 +1,6 @@
 # Sources
-SET(NETWORK_TYPE_TEST_SOURCES RawTypeTests.cpp
+SET(NETWORK_TYPE_TEST_SOURCES ConnectionStateTests.cpp
+                              RawTypeTests.cpp
                               VarNumberTests.cpp
                               VarStringTests.cpp
 )
