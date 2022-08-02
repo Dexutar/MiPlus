@@ -5,6 +5,7 @@ on:
     branches: [ master ]
     paths:
       - 'containers/build.Dockerfile'
+      - '.github/images.yml'
 
 jobs:
   docker:

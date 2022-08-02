@@ -3,8 +3,19 @@ name: Main
 on:
   push:
     branches: [ master ]
+    paths-ignore:
+      - 'containers/build.Dockerfile'
+      - '.github/images.yml'
   pull_request:
     branches: [ master ]
+    paths-ignore:
+      - 'containers/build.Dockerfile'
+      - '.github/images.yml'
+  
+  workflow_run:
+    workflows: [Images]
+    types:
+      - completed
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
