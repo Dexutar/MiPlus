@@ -23,6 +23,7 @@ jobs:
     - name: Build and push build image
       uses: docker/build-push-action@v3
       with:
-        context: containers/build.Dockerfile
+        context: containers
+        file: build.Dockerfile
         push: true
         tags: dexutar/miplus-build:latest
