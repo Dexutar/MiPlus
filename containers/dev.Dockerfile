@@ -1,4 +1,4 @@
-FROM fedora:35
+FROM dexutar/miplus-build:latest
 
 # Define user build arguments
 ARG UNAME=user
@@ -28,5 +28,3 @@ RUN echo -e "#!/bin/sh\n\
 
 ENTRYPOINT [ "/usr/local/share/docker-init.sh" ]
 CMD [ "sleep", "infinity" ]
-
-RUN dnf install -y gcc-c++-11.2.1 gdb-11.2 cmake-3.22.2 boost-devel-1.76.0 gtest-devel-1.10.0 gmock-devel-1.10.0 git findutils lcov

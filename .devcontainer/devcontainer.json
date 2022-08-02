@@ -1,7 +1,7 @@
 {
 	"name": "Minecraft developer environment",
 	
-	"dockerFile": "../containers/developer/Dockerfile",
+	"dockerFile": "../containers/dev.Dockerfile",
 	"build": {"args": {"UNAME": "${localEnv:USER}${localEnv:USERNAME}"}},
 	
 	// Minecraft server default port
