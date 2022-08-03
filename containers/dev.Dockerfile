@@ -1,9 +1,12 @@
 FROM dexutar/miplus-build:latest
 
+
 # Define user build arguments
 ARG UNAME=user
 
-RUN dnf install -y passwd
+
+# Add extra programs
+RUN dnf install -y gdb-12.1 git passwd
 
 # Add user
 RUN useradd -G wheel -m -s /bin/bash ${UNAME} && passwd -d ${UNAME}
