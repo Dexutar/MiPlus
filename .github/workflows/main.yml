@@ -3,14 +3,18 @@ name: Main
 on:
   push:
     branches: [ master ]
-    paths-ignore:
-      - 'containers/build.Dockerfile'
-      - '.github/workflows/images.yml'
+    paths:
+      - '.github/workflows/main.yml'
+      - 'src/**'
+      - 'test/**'
+      - 'CMakeLists.txt'
   pull_request:
     branches: [ master ]
     paths-ignore:
-      - 'containers/build.Dockerfile'
-      - '.github/workflows/images.yml'
+      - '.github/workflows/main.yml'
+      - 'src/**'
+      - 'test/**'
+      - 'CMakeLists.txt'
   
   workflow_run:
     workflows: [Images]
