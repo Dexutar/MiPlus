@@ -4,27 +4,59 @@
 
 using namespace miplus::network;
 
-TEST(ProtocolFactoryTest, CreatesHandshakeProtocol)
+TEST(ProtocolFactory, CreateHandshakeProtocol)
 {
-  EXPECT_EQ(ConnectionState::Handshake, ProtocolFactory::create(ConnectionState::Handshake, nullptr).index() - 1);
+  // Given a Handshake connection state
+  auto state = ConnectionState::Handshake;
+
+  // When creating a protocol from that state
+  auto protocol = ProtocolFactory::create(state, nullptr);
+
+  // Then the protocol should be a HandshakeProtocol
+  EXPECT_TRUE(std::holds_alternative<HandshakeProtocol>(protocol)) << "The created protocol is not a Handshake protocol";
 }
 
-TEST(ProtocolFactoryTest, CreatesPlayProtocol)
+TEST(ProtocolFactory, CreatePlayProtocol)
 {
-  EXPECT_EQ(ConnectionState::Play, ProtocolFactory::create(ConnectionState::Play, nullptr).index() - 1);
+  // Given a Play connection state
+  auto state = ConnectionState::Play;
+
+  // When creating a protocol from that state
+  auto protocol = ProtocolFactory::create(state, nullptr);
+
+  // Then the protocol should be a PlayProtocol
+  EXPECT_TRUE(std::holds_alternative<PlayProtocol>(protocol)) << "The created protocol is not a Play protocol";
 }
 
-TEST(ProtocolFactoryTest, CreatesStatusProtocol)
+TEST(ProtocolFactory, CreateStatusProtocol)
 {
-  EXPECT_EQ(ConnectionState::Status, ProtocolFactory::create(ConnectionState::Status, nullptr).index() - 1);
+  // Given a Status connection state
+  auto state = ConnectionState::Status;
+
+  // When creating a protocol from that state
+  auto protocol = ProtocolFactory::create(state, nullptr);
+
+  // Then the protocol should be a StatusProtocol
+  EXPECT_TRUE(std::holds_alternative<StatusProtocol>(protocol)) << "The created protocol is not a Status protocol";
 }
 
-TEST(ProtocolFactoryTest, CreatesLoginProtocol)
+TEST(ProtocolFactory, CreateLoginProtocol)
 {
-  EXPECT_EQ(ConnectionState::Login, ProtocolFactory::create(ConnectionState::Login, nullptr).index() - 1);
+  // Given a Login connection state
+  auto state = ConnectionState::Login;
+
+  // When creating a protocol from that state
+  auto protocol = ProtocolFactory::create(state, nullptr);
+
+  // Then the protocol should be a LoginProtocol
+  EXPECT_TRUE(std::holds_alternative<LoginProtocol>(protocol)) << "The created protocol is not a Login protocol";
 }
 
-TEST(ProtocolFactoryTest, FailsWithInvalidConnectionState)
+TEST(ProtocolFactory, FailWithAnInvalidConnectionState)
 {
-  EXPECT_THROW(ProtocolFactory::create(ConnectionState::INVALID, nullptr), std::invalid_argument);
+  // Given a Invalid connection state
+  auto state = ConnectionState::INVALID;
+
+  // When creating a protocol from that state, then it should throw an invalid argument exception
+  EXPECT_THROW(ProtocolFactory::create(state, nullptr), std::invalid_argument) << "The factory should have thrown an invalid argument excpetion";
 }
