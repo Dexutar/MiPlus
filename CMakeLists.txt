@@ -7,7 +7,7 @@ project(MiPlus  VERSION 1.0
 )
 
 
-find_package (Boost 1.75 REQUIRED)
+find_package (Boost 1.90 CONFIG REQUIRED)
 find_package (Threads REQUIRED)
 find_package (GTest REQUIRED)
 

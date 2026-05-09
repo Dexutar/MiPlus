@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/asio.hpp>
+#include <boost/type_traits.hpp>
 
 namespace miplus
 {
@@ -15,17 +16,16 @@ struct ValidFrameCondition
     std::uint8_t index = 0;
     Iterator it = begin;
 
-    while (it != end) 
+    while (it != end)
     {
       if (index < 3)
       {
         std::int8_t read = *(it++);
-        if (read > 0)
-          return {it, true};
+        if (read > 0) return {it, true};
       }
       else
         return {++it, true};
-      
+
       ++index;
     }
 
