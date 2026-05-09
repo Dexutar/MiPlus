@@ -12,8 +12,7 @@ RUN dnf install -y gdb-17.1 git passwd
 RUN useradd -G wheel -m -s /bin/bash ${UNAME} && passwd -d ${UNAME}
 
 # Install Docker CE CLI
-RUN dnf install -y dnf-plugins-core && \
-  dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo && \
+RUN dnf config-manager addrepo --from-repofile https://download.docker.com/linux/fedora/docker-ce.repo && \
   dnf install -y docker-ce-cli
 
 # Default to root only access to the Docker socket, set up non-root init script
