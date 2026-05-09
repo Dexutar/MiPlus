@@ -6,7 +6,7 @@ ARG UNAME=user
 
 
 # Add extra programs
-RUN dnf install -y gdb-12.1 git passwd
+RUN dnf install -y gdb-17.1 git passwd
 
 # Add user
 RUN useradd -G wheel -m -s /bin/bash ${UNAME} && passwd -d ${UNAME}
