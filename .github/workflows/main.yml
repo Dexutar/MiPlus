@@ -46,10 +46,10 @@ jobs:
 
       - name: Generate coverage report
         run: |
-          lcov -c -i -d ${{github.workspace}} -o coverage.base
-          lcov -d ${{github.workspace}} -c -o coverage.capture
-          lcov -a coverage.base -a coverage.capture -o coverage.info
-          lcov -r coverage.info '/usr/include/*' '*/test/*' '*/mocks/*' -o coverage.info
+          lcov -c -i -d ${{github.workspace}} -o coverage.base --ignore-errors mismatch,atleast
+          lcov -d ${{github.workspace}} -c -o coverage.capture --ignore-errors mismatch,atleast
+          lcov -a coverage.base -a coverage.capture -o coverage.info --ignore-errors mismatch,atleast
+          lcov -r coverage.info '/usr/include/*' '*/test/*' '*/mocks/*' -o coverage.info --ignore-errors mismatch,atleast
         working-directory: ${{github.workspace}}
 
       - name: Upload coverage to Codecov
